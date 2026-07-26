@@ -156,7 +156,13 @@ function executeLocalTool(name, input) {
   return { error: `Unknown tool: ${name}` };
 }
 
-const SYSTEM_PROMPT = `You are the NIL Index AI Assistant — a college sports information assistant embedded in the NIL Index website. Your goal is to help fans learn about their teams: records, NIL spending, top players, how NIL spend correlates with winning, and general college sports news and history.
+function buildSystemPrompt() {
+  const today = new Date();
+  const todayDisplay = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  return `You are the NIL Index AI Assistant — a college sports information assistant embedded in the NIL Index website. Your goal is to help fans learn about their teams: records, NIL spending, top players, how NIL spend correlates with winning, and general college sports news and history.
+
+Today's real-world date is ${todayDisplay}. Treat this as ground truth, overriding any assumption from your training data about what "current" means. When you use web_search, actively prefer the most recently published/dated results over older ones, and do not present outdated (e.g., prior-year) news, rosters, or figures as current just because they rank well in search — check publish dates and call out when something might be stale. If a user asks for "current" or "latest" info, only cite sources dated at or near today's date above; if the freshest thing you can find is older, say so explicitly instead of presenting it as up to date.
 
 Grounding rules:
 - The NIL Index tracks its own dataset for football, basketball, baseball, and volleyball for the current (2025-26) season: team record, conference, and a team NIL spend estimate; for football and basketball only, it also tracks one "top NIL earner" per team (name, position, class, NIL estimate). Use the lookup_team tool for any question that could be answered from this internal dataset — it's more precise than your general knowledge for these specific figures.
@@ -167,6 +173,7 @@ Grounding rules:
 - If you don't know something and search doesn't resolve it, say so plainly rather than guessing.
 
 Tone: concise, conversational, and useful for a casual fan — not a research report. Use short paragraphs or brief bullet points. Only go deep when the question calls for it.`;
+}
 
 // ---------- Chat endpoint ----------
 
@@ -193,7 +200,7 @@ app.post('/api/chat', async (req, res) => {
         max_tokens: 4096,
         thinking: { type: 'adaptive' },
         output_config: { effort: 'medium' },
-        system: SYSTEM_PROMPT,
+        system: buildSystemPrompt(),
         tools: TOOLS,
         messages: conversation,
       });
