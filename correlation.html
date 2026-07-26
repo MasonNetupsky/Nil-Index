@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIL Index — Competitive Correlation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0b1629; --navy-mid: #132040; --navy-light: #1a2d55;
+      --black: #06090f; --white: #ffffff; --off-white: #f4f6fa;
+      --text-dark: #1a2035; --text-muted: #6b7a99;
+      --accent: #c9a84c; --border-dark: #1e2d4a; --border-light: #dde3ef;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 52px; height: 64px;
+      background: var(--navy); border-bottom: 1px solid var(--border-dark);
+    }
+    .nav-left { display: flex; align-items: center; gap: 14px; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-page-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+      padding: 4px 12px; border: 1px solid rgba(201,168,76,0.3); margin-left: 8px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    .nav-tab-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-tab-link:hover { color: var(--white); }
+    .nav-tab-link.current { color: var(--accent); }
+    .nav-ai-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      background: var(--accent); color: var(--navy); padding: 7px 16px; transition: all 0.2s;
+    }
+    .nav-ai-link:hover { background: var(--white); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--white); }
+    .nav-back::before { content: '←'; font-size: 0.9rem; }
+
+    /* HERO STRIP */
+    .page-hero {
+      padding: 100px 52px 56px;
+      background: var(--navy);
+      border-bottom: 1px solid var(--border-dark);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 800px; }
+    .page-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .page-eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem); line-height: 0.92;
+      letter-spacing: 0.02em; color: var(--white);
+    }
+    .page-title .outline { -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); color: transparent; }
+    .page-title .accent { color: var(--accent); }
+    .page-sub {
+      margin-top: 20px; font-size: 0.95rem; font-weight: 300;
+      color: rgba(255,255,255,0.45); max-width: 620px; line-height: 1.75;
+    }
+
+    /* SPORT TABS */
+    .sport-tab-bar {
+      background: var(--navy); padding: 0 52px;
+      border-bottom: 1px solid var(--border-dark);
+      display: flex; gap: 0; position: sticky; top: 64px; z-index: 90;
+      overflow-x: auto;
+    }
+    .sport-tab-btn {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 18px 32px; border: none; background: transparent;
+      color: rgba(255,255,255,0.35); cursor: pointer; white-space: nowrap;
+      border-bottom: 3px solid transparent; transition: all 0.2s;
+    }
+    .sport-tab-btn:hover { color: rgba(255,255,255,0.7); }
+    .sport-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* MAIN CONTENT */
+    .corr-main { padding: 52px 52px 0; }
+    .sport-panel { display: none; }
+    .sport-panel.active { display: block; }
+
+    .corr-layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: stretch; }
+    .visual-card {
+      background: var(--navy-mid); border: 1px solid var(--border-dark);
+      padding: 32px; position: relative;
+    }
+    .visual-card-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 4px;
+    }
+    .visual-card-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem;
+      color: var(--white); letter-spacing: 0.04em; margin-bottom: 8px; line-height: 1.1;
+    }
+    .visual-card-subtitle {
+      font-size: 0.8rem; font-weight: 300; color: rgba(255,255,255,0.35);
+      margin-bottom: 24px; line-height: 1.5;
+    }
+    .chart-wrap { position: relative; width: 100%; height: 380px; }
+
+    .corr-panel {
+      background: var(--navy); border: 1px solid var(--border-dark);
+      padding: 32px; display: flex; flex-direction: column; justify-content: center;
+    }
+    .corr-r-value {
+      font-family: 'Bebas Neue', sans-serif; font-size: 4.2rem;
+      color: var(--accent); line-height: 1;
+    }
+    .corr-r-label {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--white);
+      margin-top: 8px;
+    }
+    .corr-r2 {
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-dark);
+      font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.5); line-height: 1.6;
+    }
+    .corr-explain {
+      margin-top: 18px; font-size: 0.88rem; font-weight: 300;
+      color: rgba(255,255,255,0.6); line-height: 1.75;
+    }
+
+    /* COMPARISON STRIP (always visible) */
+    .compare-section { padding: 56px 52px 80px; border-top: 1px solid var(--border-dark); margin-top: 48px; }
+    .compare-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.02em; color: var(--white);
+      margin-bottom: 6px;
+    }
+    .compare-sub { font-size: 0.85rem; font-weight: 300; color: rgba(255,255,255,0.4); max-width: 600px; line-height: 1.65; margin-bottom: 32px; }
+    .compare-bars { display: flex; flex-direction: column; gap: 18px; margin-bottom: 40px; }
+    .compare-row { display: grid; grid-template-columns: 160px 1fr 70px; align-items: center; gap: 16px; }
+    .compare-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+    .compare-track { height: 10px; background: rgba(255,255,255,0.06); position: relative; }
+    .compare-fill { height: 100%; position: absolute; left: 0; top: 0; }
+    .compare-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; color: var(--accent); text-align: right; }
+    .compare-note {
+      padding: 20px 24px; border-left: 2px solid var(--accent);
+      background: rgba(201,168,76,0.05); font-size: 0.85rem; font-weight: 300;
+      color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 720px;
+    }
+    .compare-note strong { color: var(--accent); font-weight: 600; }
+
+    /* FOOTER */
+    .page-footer {
+      background: var(--black); padding: 36px 52px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); }
+    .footer-brand span { color: var(--accent); }
+    .footer-note { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+    @media (max-width: 960px) {
+      nav, .page-hero, .corr-main, .sport-tab-bar, .page-footer, .compare-section { padding-left: 24px; padding-right: 24px; }
+      .corr-layout { grid-template-columns: 1fr; }
+      .compare-row { grid-template-columns: 110px 1fr 60px; }
+      .nav-right { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">NIL<span>INDEX</span></a>
+      <span class="nav-page-title">Correlation</span>
+    </div>
+    <div class="nav-right">
+      <a href="data.html" class="nav-tab-link">Data</a>
+      <a href="visuals.html" class="nav-tab-link">Visuals</a>
+      <a href="correlation.html" class="nav-tab-link current">Correlation</a>
+      <a href="updates.html" class="nav-tab-link">Updates</a>
+      <a href="ai.html" class="nav-ai-link">AI Assistant</a>
+      <a href="index.html" class="nav-back">Back to Home</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">Spend vs. Outcomes</div>
+      <h1 class="page-title">
+        DOES SPENDING<br>
+        <span class="accent">ACTUALLY</span> <span class="outline">WIN GAMES?</span>
+      </h1>
+      <p class="page-sub">
+        Every NIL dollar is a bet that money buys wins. We ran the actual numbers — team NIL estimate against win percentage — for every school in the dataset with a reported figure, sport by sport. The relationship is real, but it's weaker than the arms race narrative suggests.
+      </p>
+    </div>
+  </div>
+
+  <!-- SPORT TABS -->
+  <div class="sport-tab-bar">
+    <button class="sport-tab-btn active" data-sport="football">Football</button>
+    <button class="sport-tab-btn" data-sport="basketball">Men's Basketball</button>
+    <button class="sport-tab-btn" data-sport="baseball">Men's Baseball</button>
+    <button class="sport-tab-btn" data-sport="volleyball">Women's Volleyball</button>
+  </div>
+
+  <div class="corr-main">
+
+    <!-- FOOTBALL -->
+    <div class="sport-panel active" id="panel-football">
+      <div class="corr-layout">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-title">Football</div>
+          <div class="visual-card-subtitle">25 programs with reported NIL estimates, 2024 season.</div>
+          <div class="chart-wrap"><canvas id="corr-football"></canvas></div>
+        </div>
+        <div class="corr-panel">
+          <div class="corr-r-value">r = 0.60</div>
+          <div class="corr-r-label">Moderate-to-Strong Positive</div>
+          <div class="corr-r2">R² = 0.36 — NIL spend explains roughly 36% of the variance in win rate across these programs.</div>
+          <p class="corr-explain">Football shows the clearest relationship of the four sports outside volleyball. Texas, Miami, Texas A&amp;M, and Oregon all sit near the top of both axes. But the exceptions matter: LSU spent $38M and won just 53.8% of its games, while Arkansas' $22M budget produced a 16.7% win rate — among the worst in the sample. Money buys talent, not scheme fit or health, and both of those still decide close games.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASKETBALL -->
+    <div class="sport-panel" id="panel-basketball">
+      <div class="corr-layout">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-title">Men's Basketball</div>
+          <div class="visual-card-subtitle">40 programs with reported NIL estimates, 2024–25 season.</div>
+          <div class="chart-wrap"><canvas id="corr-basketball"></canvas></div>
+        </div>
+        <div class="corr-panel">
+          <div class="corr-r-value">r = 0.45</div>
+          <div class="corr-r-label">Moderate Positive</div>
+          <div class="corr-r2">R² = 0.20 — the weakest relationship of the four sports. NIL spend explains only about 20% of the variance in win rate.</div>
+          <p class="corr-explain">Kentucky's $22M collective is roughly double the next-highest budget, yet Duke and Michigan won at 92%+ clips on budgets closer to $10–12M. Basketball rosters are smaller and rotations tighter, so a well-coached team can out-execute a bigger spender far more easily than in football. Depth and matchups still carry more weight than payroll size in March.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASEBALL -->
+    <div class="sport-panel" id="panel-baseball">
+      <div class="corr-layout">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-title">Men's Baseball</div>
+          <div class="visual-card-subtitle">41 programs with reported NIL estimates, 2025 season.</div>
+          <div class="chart-wrap"><canvas id="corr-baseball"></canvas></div>
+        </div>
+        <div class="corr-panel">
+          <div class="corr-r-value">r = 0.52</div>
+          <div class="corr-r-label">Moderate Positive</div>
+          <div class="corr-r2">R² = 0.27 — NIL spend explains about 27% of the variance in win rate.</div>
+          <p class="corr-explain">Georgia posted a 79.1% win rate on a $900K collective, outperforming several programs spending over $1M. Baseball's NIL market is still emerging and draft eligibility complicates who collectives can even commit to long-term, which likely keeps development and coaching more decisive here than in the two revenue sports.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOLLEYBALL -->
+    <div class="sport-panel" id="panel-volleyball">
+      <div class="corr-layout">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-title">Women's Volleyball</div>
+          <div class="visual-card-subtitle">42 programs with reported NIL estimates, 2024 season.</div>
+          <div class="chart-wrap"><canvas id="corr-volleyball"></canvas></div>
+        </div>
+        <div class="corr-panel">
+          <div class="corr-r-value">r = 0.83</div>
+          <div class="corr-r-label">Strong Positive</div>
+          <div class="corr-r2">R² = 0.69 — the strongest relationship in the dataset. NIL spend explains roughly 69% of the variance in win rate.</div>
+          <p class="corr-explain">Nebraska's $1.8M collective and 97.1% win rate anchor the top of both axes, and the pattern holds fairly consistently down the list. Smaller rosters and lower per-athlete costs likely mean volleyball NIL dollars go further toward locking in a program's best players — making budget a much stronger predictor here than in any other sport tracked.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPARISON — always visible -->
+  <div class="compare-section">
+    <div class="compare-title">HOW THE FOUR SPORTS STACK UP</div>
+    <p class="compare-sub">Pearson correlation coefficient (r) between team NIL estimate and win percentage, by sport. Higher means NIL spend more reliably predicts winning; lower means other factors — coaching, depth, development — are doing more of the work.</p>
+    <div class="compare-bars">
+      <div class="compare-row">
+        <div class="compare-name">Volleyball</div>
+        <div class="compare-track"><div class="compare-fill" style="width:83%;background:#1d9e75;"></div></div>
+        <div class="compare-val">0.83</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-name">Football</div>
+        <div class="compare-track"><div class="compare-fill" style="width:60%;background:#8e6fd1;"></div></div>
+        <div class="compare-val">0.60</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-name">Baseball</div>
+        <div class="compare-track"><div class="compare-fill" style="width:52%;background:#2a78d6;"></div></div>
+        <div class="compare-val">0.52</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-name">Basketball</div>
+        <div class="compare-track"><div class="compare-fill" style="width:45%;background:#2a78d6;"></div></div>
+        <div class="compare-val">0.45</div>
+      </div>
+    </div>
+    <div class="compare-note">
+      <strong>Takeaway:</strong> Across all four sports, NIL spend explains anywhere from 20% to 69% of the variance in win rate. That's a meaningful edge — but nowhere close to deterministic. Bigger budgets shift the odds toward winning more often; they don't decide any single game. Figures reflect team NIL estimates for schools with reported data. See <a href="index.html#methodology" style="color:var(--accent);">Methodology</a> for full sourcing details.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-brand">NIL<span>INDEX</span></div>
+    <div class="footer-note">NIL figures are estimates. See methodology on the main site for full sourcing details. © 2026 NIL Index.</div>
+  </div>
+
+<script>
+  const ACCENT = '#c9a84c', WHITE = 'rgba(255,255,255,0.85)', MUTED = 'rgba(255,255,255,0.3)';
+  const GRID = 'rgba(255,255,255,0.06)', BLUE = '#2a78d6', GREEN = '#1d9e75', PURPLE = '#8e6fd1';
+  const tipBase = { backgroundColor: '#0b1629', borderColor: '#1e2d4a', borderWidth: 1, padding: 10, titleFont:{size:12,weight:'700'}, bodyFont:{size:11} };
+  const fmt = v => v >= 1000000 ? '$' + (v/1000000).toFixed(1) + 'M' : v >= 1000 ? '$' + (v/1000).toFixed(0) + 'K' : '$' + v;
+
+  function scatter(id, pts, dotColor) {
+    new Chart(document.getElementById(id), {
+      type: 'scatter',
+      data: { datasets: [{ data: pts, backgroundColor: dotColor+'bb', pointRadius: 5, pointHoverRadius: 8 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{display:false}, tooltip:{...tipBase,
+          callbacks:{title:i=>i[0].raw.label, label:c=>` NIL: ${fmt(c.parsed.x)} | Win%: ${c.parsed.y}%`}} },
+        scales: {
+          x: { title:{display:true,text:'NIL Estimate',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID}, min:0 },
+          y: { title:{display:true,text:'Win %',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>v+'%'}, grid:{color:GRID}, border:{color:GRID}, min:0, max:100 }
+        }
+      }
+    });
+  }
+
+  scatter('corr-football', [
+    {x:40000000,y:76.9,label:'Texas'},{x:39500000,y:81.2,label:'Miami'},{x:39000000,y:69.2,label:'Notre Dame'},
+    {x:38900000,y:84.6,label:'Texas A&M'},{x:38000000,y:53.8,label:'LSU'},{x:38000000,y:86.7,label:'Oregon'},
+    {x:37200000,y:73.3,label:'Alabama'},{x:35700000,y:61.5,label:'Tennessee'},{x:35200000,y:86.7,label:'Ole Miss'},
+    {x:35000000,y:85.7,label:'Ohio State'},{x:34200000,y:85.7,label:'Georgia'},{x:29000000,y:33.3,label:'Florida'},
+    {x:26000000,y:33.3,label:'South Carolina'},{x:24400000,y:64.3,label:'Duke'},{x:22000000,y:16.7,label:'Arkansas'},
+    {x:21000000,y:66.7,label:'Iowa State'},{x:20000000,y:50.0,label:'Kansas State'},{x:20000000,y:33.3,label:'North Carolina'},
+    {x:19000000,y:69.2,label:'Illinois'},{x:19000000,y:76.9,label:'Houston'},{x:18000000,y:53.8,label:'Nebraska'},
+    {x:18000000,y:61.5,label:'NC State'},{x:18000000,y:53.8,label:'California'},{x:16000000,y:41.7,label:'Rutgers'},
+    {x:15000000,y:16.7,label:'Boston College'}
+  ], PURPLE);
+
+  scatter('corr-basketball', [
+    {x:22000000,y:61.1,label:'Kentucky'},{x:12000000,y:92.1,label:'Duke'},{x:11500000,y:75.7,label:'Arkansas'},
+    {x:11000000,y:67.6,label:'Tennessee'},{x:11000000,y:65.7,label:'BYU'},{x:10500000,y:92.5,label:'Michigan'},
+    {x:10500000,y:67.6,label:'Texas Tech'},{x:10500000,y:68.6,label:'Louisville'},{x:10500000,y:81.1,label:"St. John's"},
+    {x:10000000,y:77.1,label:'Florida'},{x:10000000,y:57.1,label:'Texas'},{x:9500000,y:71.4,label:'Alabama'},
+    {x:9000000,y:50.0,label:'Baylor'},{x:8500000,y:75.7,label:'Illinois'},{x:8000000,y:42.9,label:'Ole Miss'},
+    {x:8000000,y:37.5,label:'Kansas State'},{x:7500000,y:66.7,label:'Georgia'},{x:7500000,y:51.5,label:'Arizona State'},
+    {x:7000000,y:40.6,label:'South Carolina'},{x:7000000,y:81.1,label:'Houston'},{x:7000000,y:54.5,label:'Florida State'},
+    {x:6500000,y:45.5,label:'Minnesota'},{x:6500000,y:35.5,label:'Georgia Tech'},{x:6000000,y:60.6,label:'Missouri'},
+    {x:6000000,y:39.4,label:'Pitt'},{x:5500000,y:63.6,label:'California'},{x:5000000,y:58.8,label:'SMU'},
+    {x:4000000,y:50.0,label:'DePaul'},{x:2000000,y:72.7,label:'South Florida'},{x:1800000,y:33.3,label:'East Carolina'},
+    {x:1500000,y:10.7,label:'UTSA'},{x:1400000,y:61.3,label:'UAB'},{x:1200000,y:64.9,label:'Nevada'},
+    {x:1100000,y:51.5,label:'Oregon State'},{x:900000,y:69.4,label:'New Mexico'},{x:800000,y:9.4,label:'Air Force'},
+    {x:800000,y:58.1,label:'Marshall'},{x:750000,y:54.3,label:'Georgia Southern'},{x:700000,y:53.1,label:'Wyoming'},
+    {x:700000,y:34.4,label:'Old Dominion'}
+  ], BLUE);
+
+  scatter('corr-baseball', [
+    {x:1800000,y:51.7,label:'LSU'},{x:1600000,y:63.3,label:'Tennessee'},{x:1500000,y:65.1,label:'Arkansas'},
+    {x:1400000,y:71.9,label:'Texas A&M'},{x:1300000,y:66.1,label:'Florida'},{x:1200000,y:75.4,label:'Texas'},
+    {x:1200000,y:66.1,label:'Miami'},{x:1100000,y:64.1,label:'Ole Miss'},{x:1100000,y:67.8,label:'Fla. State'},
+    {x:1000000,y:69.4,label:'Miss. State'},{x:950000,y:62.3,label:'Vanderbilt'},{x:900000,y:79.1,label:'Georgia'},
+    {x:850000,y:67.5,label:'S. Carolina'},{x:800000,y:64.0,label:'Oklahoma'},{x:750000,y:64.5,label:'Auburn'},
+    {x:750000,y:67.3,label:'TCU'},{x:700000,y:66.7,label:'Alabama'},{x:700000,y:65.0,label:'Texas Tech'},
+    {x:600000,y:66.1,label:'Baylor'},{x:600000,y:58.0,label:'Kentucky'},{x:580000,y:63.0,label:'Arizona'},
+    {x:550000,y:52.0,label:'Missouri'},{x:500000,y:74.2,label:'Stanford'},{x:480000,y:61.0,label:'NC State'},
+    {x:420000,y:68.3,label:'E. Carolina'},{x:400000,y:70.0,label:'Louisiana'},{x:380000,y:65.0,label:'Oregon St.'},
+    {x:350000,y:66.1,label:'Tulane'},{x:320000,y:60.0,label:'G. Southern'},{x:300000,y:54.0,label:'S. Florida'},
+    {x:280000,y:63.0,label:'W. Virginia'},{x:260000,y:57.0,label:'Fresno St.'},{x:240000,y:50.0,label:'SDSU'},
+    {x:220000,y:55.0,label:'Troy'},{x:200000,y:52.0,label:'Memphis'},{x:180000,y:48.0,label:'Nevada'},
+    {x:160000,y:50.0,label:'Air Force'},{x:140000,y:49.0,label:'San Jose St.'},{x:120000,y:46.0,label:'Kent St.'},
+    {x:100000,y:43.0,label:'Ohio'},{x:90000,y:41.0,label:'Akron'}
+  ], BLUE);
+
+  scatter('corr-volleyball', [
+    {x:1800000,y:97.1,label:'Nebraska'},{x:1000000,y:84.8,label:'Wisconsin'},{x:900000,y:86.7,label:'Texas'},
+    {x:850000,y:87.9,label:'Texas A&M'},{x:750000,y:59.4,label:'Penn State'},{x:650000,y:91.4,label:'Kentucky'},
+    {x:600000,y:78.8,label:'Louisville'},{x:550000,y:85.3,label:'Stanford'},{x:500000,y:72.4,label:'Tennessee'},
+    {x:500000,y:70.6,label:'Minnesota'},{x:480000,y:68.5,label:'Ohio State'},{x:450000,y:69.2,label:'Florida'},
+    {x:420000,y:64.6,label:'Michigan'},{x:420000,y:72.4,label:'Kansas'},{x:400000,y:72.7,label:'Oregon'},
+    {x:400000,y:72.7,label:'Fla. State'},{x:380000,y:68.0,label:'Baylor'},{x:360000,y:67.9,label:'Iowa State'},
+    {x:350000,y:74.5,label:'Purdue'},{x:350000,y:61.5,label:'Georgia'},{x:340000,y:64.8,label:'Notre Dame'},
+    {x:320000,y:61.5,label:'Illinois'},{x:300000,y:56.4,label:'Washington'},{x:280000,y:67.0,label:'Ole Miss'},
+    {x:260000,y:62.0,label:'Auburn'},{x:240000,y:54.5,label:'Iowa'},{x:220000,y:55.0,label:'Indiana'},
+    {x:200000,y:49.0,label:'Oklahoma'},{x:180000,y:50.5,label:'Arkansas'},{x:170000,y:48.1,label:'LSU'},
+    {x:150000,y:41.0,label:'Miss. State'},{x:140000,y:45.0,label:'SMU'},{x:130000,y:38.5,label:'Vanderbilt'},
+    {x:120000,y:53.0,label:'Boise St.'},{x:110000,y:47.0,label:'SDSU'},{x:100000,y:51.0,label:'C. State'},
+    {x:90000,y:44.0,label:'Fresno St.'},{x:80000,y:41.0,label:'App. State'},{x:70000,y:39.0,label:'G. Southern'},
+    {x:65000,y:37.0,label:'Louisiana'},{x:50000,y:34.0,label:'Troy'},{x:40000,y:32.0,label:'Ark. State'}
+  ], GREEN);
+
+  const tabButtons = document.querySelectorAll('.sport-tab-btn');
+  function activatePanel(sport) {
+    const btn = document.querySelector(`.sport-tab-btn[data-sport="${sport}"]`);
+    if (!btn) return;
+    tabButtons.forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sport-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + sport).classList.add('active');
+  }
+  tabButtons.forEach(btn => { btn.addEventListener('click', () => activatePanel(btn.dataset.sport)); });
+
+  const requestedSport = new URLSearchParams(location.search).get('sport');
+  if (requestedSport) activatePanel(requestedSport);
+</script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIL Index — Data Tables</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0b1629; --navy-mid: #132040; --navy-light: #1a2d55;
+      --black: #06090f; --white: #ffffff; --off-white: #f4f6fa;
+      --light-gray: #e8ecf3; --mid-gray: #c2cad8;
+      --text-dark: #1a2035; --text-muted: #6b7a99;
+      --accent: #c9a84c; --border-dark: #1e2d4a; --border-light: #dde3ef;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--white); color: var(--text-dark); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 52px; height: 64px;
+      background: var(--navy); border-bottom: 1px solid var(--border-dark);
+    }
+    .nav-left { display: flex; align-items: center; gap: 14px; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-page-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+      padding: 4px 12px; border: 1px solid rgba(201,168,76,0.3); margin-left: 8px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    .nav-tab-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-tab-link:hover { color: var(--white); }
+    .nav-tab-link.current { color: var(--accent); }
+    .nav-ai-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      background: var(--accent); color: var(--navy); padding: 7px 16px; transition: all 0.2s;
+    }
+    .nav-ai-link:hover { background: var(--white); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--white); }
+    .nav-back::before { content: '←'; font-size: 0.9rem; }
+
+    /* HERO STRIP */
+    .page-hero {
+      padding: 100px 52px 56px;
+      background: var(--navy);
+      border-bottom: 1px solid var(--border-dark);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 800px; }
+    .page-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .page-eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem); line-height: 0.92;
+      letter-spacing: 0.02em; color: var(--white);
+    }
+    .page-title .outline { -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); color: transparent; }
+    .page-title .accent { color: var(--accent); }
+    .page-sub {
+      margin-top: 20px; font-size: 0.95rem; font-weight: 300;
+      color: rgba(255,255,255,0.45); max-width: 600px; line-height: 1.75;
+    }
+
+    /* SPORT TABS */
+    .sport-tab-bar {
+      background: var(--navy); padding: 0 52px;
+      border-bottom: 1px solid var(--border-dark);
+      display: flex; gap: 0; position: sticky; top: 64px; z-index: 90;
+      overflow-x: auto;
+    }
+    .sport-tab-btn {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 18px 32px; border: none; background: transparent;
+      color: rgba(255,255,255,0.35); cursor: pointer; white-space: nowrap;
+      border-bottom: 3px solid transparent; transition: all 0.2s;
+    }
+    .sport-tab-btn:hover { color: rgba(255,255,255,0.7); }
+    .sport-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* MAIN */
+    .data-main { padding: 40px 52px 80px; background: var(--off-white); }
+
+    /* VIEW TOGGLE */
+    .view-toggle-bar { display: flex; gap: 4px; margin-bottom: 0; }
+    .view-toggle-btn {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 10px 28px; border: 1px solid var(--border-light);
+      background: var(--white); color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .view-toggle-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .view-toggle-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+    .table-controls {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      margin: 24px 0 18px;
+    }
+    .filter-label {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted);
+      margin-right: 4px;
+    }
+    .conf-select {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem;
+      letter-spacing: 0.06em; color: var(--text-dark);
+      padding: 9px 14px; border: 1px solid var(--border-light);
+      background: var(--white); cursor: pointer; outline: none;
+      appearance: none; padding-right: 30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7a99'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .school-search {
+      font-family: 'Barlow', sans-serif; font-size: 0.85rem;
+      padding: 9px 14px; border: 1px solid var(--border-light);
+      background: var(--white); outline: none; color: var(--text-dark); width: 200px;
+    }
+    .school-search::placeholder { color: var(--mid-gray); }
+    .record-count {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border-light); background: var(--white); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .data-table th {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-muted); padding: 14px 18px; text-align: left;
+      background: var(--navy); color: rgba(255,255,255,0.6);
+      border-bottom: 2px solid var(--border-dark); white-space: nowrap;
+      cursor: pointer; user-select: none;
+    }
+    .data-table th:hover { color: var(--white); }
+    .data-table th.sorted-asc::after { content: ' ↑'; color: var(--accent); }
+    .data-table th.sorted-desc::after { content: ' ↓'; color: var(--accent); }
+    .th-school { min-width: 160px; }
+    .th-postseason { min-width: 280px; }
+    .data-table td {
+      padding: 13px 18px; border-bottom: 1px solid var(--border-light);
+      color: var(--text-dark); vertical-align: top; line-height: 1.45;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: var(--off-white); }
+    .data-table tr:hover td { background: #edf0f7; }
+    .td-school { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.04em; color: var(--navy); }
+    .td-conf { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .td-record { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em; color: var(--navy); white-space: nowrap; }
+    .td-finish { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--navy); }
+    .td-postseason { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    .badge-postseason {
+      display: inline-block; font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 7px; margin-bottom: 4px; border: 1px solid;
+    }
+    .badge-champ { color: var(--accent); border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+    .badge-cfp { color: #4a90d9; border-color: rgba(74,144,217,0.4); background: rgba(74,144,217,0.07); }
+    .badge-none { color: var(--mid-gray); border-color: var(--border-light); }
+    .no-results { padding: 60px 24px; text-align: center; color: var(--text-muted); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .conf-group-header td {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); background: var(--navy) !important;
+      padding: 10px 18px; border-bottom: none;
+      width: 100%;
+    }
+    .conf-group-header { width: 100%; }
+
+    /* FOOTER */
+    .page-footer {
+      background: var(--black); padding: 36px 52px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); }
+    .footer-brand span { color: var(--accent); }
+    .footer-note { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+    @media (max-width: 960px) {
+      nav, .page-hero, .data-main, .sport-tab-bar, .page-footer { padding-left: 24px; padding-right: 24px; }
+      .nav-right { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">NIL<span>INDEX</span></a>
+      <span class="nav-page-title">Data</span>
+    </div>
+    <div class="nav-right">
+      <a href="data.html" class="nav-tab-link current">Data</a>
+      <a href="visuals.html" class="nav-tab-link">Visuals</a>
+      <a href="correlation.html" class="nav-tab-link">Correlation</a>
+      <a href="updates.html" class="nav-tab-link">Updates</a>
+      <a href="ai.html" class="nav-ai-link">AI Assistant</a>
+      <a href="index.html" class="nav-back">Back to Home</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">Competitive Records &amp; NIL Data</div>
+      <h1 class="page-title">
+        THE DATA,<br>
+        <span class="accent">BY</span> <span class="outline">SPORT</span>
+      </h1>
+      <p class="page-sub">
+        Win-loss records, conference finishes, and postseason results across all four tracked sports, alongside estimated NIL compensation by school and top player. Pick a sport tab to jump straight in.
+      </p>
+    </div>
+  </div>
+
+  <!-- SPORT TABS -->
+  <div class="sport-tab-bar">
+    <button class="sport-tab-btn active" data-sport="football">Football</button>
+    <button class="sport-tab-btn" data-sport="basketball">Men's Basketball</button>
+    <button class="sport-tab-btn" data-sport="baseball">Men's Baseball</button>
+    <button class="sport-tab-btn" data-sport="volleyball">Women's Volleyball</button>
+  </div>
+
+  <div class="data-main">
+    <!-- View Toggle + Filters -->
+    <div class="view-toggle-bar">
+      <button class="view-toggle-btn active" data-view="standings">Standings</button>
+      <button class="view-toggle-btn" data-view="nil">NIL Data</button>
+    </div>
+    <div class="table-controls">
+      <div class="conf-filter-wrap">
+        <label class="filter-label">Conference</label>
+        <select id="confFilter" class="conf-select">
+          <option value="">All Conferences</option>
+        </select>
+      </div>
+      <div class="search-wrap">
+        <input type="text" id="schoolSearch" class="school-search" placeholder="Search school..." />
+      </div>
+      <div class="record-count" id="recordCount"></div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table class="data-table" id="dataTable">
+        <thead id="tableHead">
+          <tr></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-brand">NIL<span>INDEX</span></div>
+    <div class="footer-note">NIL figures are estimates. See methodology on the main site for full sourcing details. © 2026 NIL Index.</div>
+  </div>
+
+<script src="js/nil-data.js"></script>
+<script>
+    const sportLabels = {
+    football: 'Football',
+    basketball: "Men's Basketball",
+    baseball: "Men's Baseball",
+    volleyball: "Women's Volleyball"
+  };
+
+  let currentSport = 'football';
+  let currentConf = '';
+  let currentSearch = '';
+  let currentView = 'standings';
+  let sortCol = null;
+  let sortDir = 'asc';
+
+  function getPostseasonBadge(ps) {
+    if (!ps || ps === 'No postseason') return '<span class="badge-postseason badge-none">No Postseason</span>';
+    const lower = ps.toLowerCase();
+    if (lower.includes('national champion') && !lower.includes('runner')) return '<span class="badge-postseason badge-champ">CHAMPION</span>';
+    if (lower.includes('cfp') || lower.includes('college football playoff')) return '<span class="badge-postseason badge-cfp">CFP</span>';
+    if (lower.includes('cws') || lower.includes('college world series')) return '<span class="badge-postseason badge-cfp">CWS</span>';
+    return '';
+  }
+
+  function populateConfFilter(sport) {
+    const sel = document.getElementById('confFilter');
+    const confs = [...new Set(nilData[sport].map(r => r.conference))].sort();
+    sel.innerHTML = '<option value="">All Conferences</option>';
+    confs.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      if (c === currentConf) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  function parseFinish(val) {
+    if (!val || val === 'N/A') return 9999;
+    const n = parseFloat(String(val).replace('T-', ''));
+    return isNaN(n) ? 9999 : n;
+  }
+
+  function sortByFinish(rows) {
+    return [...rows].sort((a, b) => parseFinish(a.conf_finish) - parseFinish(b.conf_finish));
+  }
+
+  function renderTable() {
+    setTableHead();
+    if (currentView === 'nil' && !sortCol) { sortCol = 'nil'; sortDir = 'desc'; }
+    if (currentView === 'standings') { sortCol = null; }
+    let allRows = nilData[currentSport].filter(r => {
+      const matchSearch = !currentSearch || r.school.toLowerCase().includes(currentSearch.toLowerCase());
+      return matchSearch;
+    });
+
+    const tbody = document.getElementById('tableBody');
+
+    if (allRows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="no-results">No results found</td></tr>';
+      document.getElementById('recordCount').textContent = '0 programs';
+      return;
+    }
+
+    let html = '';
+    let totalShown = 0;
+
+    if (currentConf) {
+      let rows = allRows.filter(r => r.conference === currentConf);
+      rows = sortByFinish(rows);
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="no-results">No results found</td></tr>';
+        document.getElementById('recordCount').textContent = '0 programs';
+        return;
+      }
+      html += rows.map(r => buildRow(r)).join('');
+      totalShown = rows.length;
+    } else {
+      const confOrder = [...new Set(nilData[currentSport].map(r => r.conference))];
+      confOrder.forEach(conf => {
+        let rows = allRows.filter(r => r.conference === conf);
+        if (rows.length === 0) return;
+        rows = sortByFinish(rows);
+        html += `<tr class="conf-group-header"><td colspan="${currentView === "standings" ? 6 : (currentSport === "baseball" || currentSport === "volleyball" ? 3 : 7)}">${conf}</td></tr>`;
+        html += rows.map(r => buildRow(r)).join('');
+        totalShown += rows.length;
+      });
+    }
+
+    tbody.innerHTML = html;
+    document.getElementById('recordCount').textContent = totalShown + ' programs';
+  }
+
+  const HEADS = {
+    standings: ['School','Conference','Record','Conf. Record','Conf. Finish','Postseason'],
+    nil: ['School','Conference','Team NIL Est.','Top Player','Pos','Class','Player NIL Est.']
+  };
+
+  function setTableHead() {
+    const heads = currentView === 'nil'
+      ? (currentSport === 'baseball' || currentSport === 'volleyball'
+          ? ['School','Conference','Team NIL Est.']
+          : ['School','Conference','Team NIL Est.','Top Player','Pos','Class','Player NIL Est.'])
+      : ['School','Conference','Record','Conf. Record','Conf. Finish','Postseason'];
+    document.getElementById('tableHead').innerHTML = '<tr>' +
+      heads.map((h,i) => {
+        const cls = i===0 ? 'th-school' : (i===heads.length-1 && currentView==='standings' ? 'th-postseason' : '');
+        return `<th class="${cls}">${h}</th>`;
+      }).join('') + '</tr>';
+  }
+
+  function buildRow(r) {
+    const badge = getPostseasonBadge(r.postseason);
+    const psText = (r.postseason && r.postseason !== 'No postseason') ? r.postseason : '';
+
+    if (currentView === 'standings') {
+      return `<tr>
+        <td class="td-school">${r.school}</td>
+        <td class="td-conf">${r.conference}</td>
+        <td class="td-record">${r.record}</td>
+        <td class="td-record">${r.conf_record}</td>
+        <td class="td-finish">${r.conf_finish}</td>
+        <td class="td-postseason">${badge}${psText ? '<br><span style="font-size:0.78rem">' + psText + '</span>' : ''}</td>
+      </tr>`;
+    } else {
+      const nilDisplay = r.nil ? '$' + r.nil.toLocaleString() : '<span style="color:var(--text-muted);font-size:0.75rem">Pending</span>';
+      const nilVerified = r.nil_verified;
+      const nilTag = r.nil
+        ? (nilVerified
+            ? '<span style="font-size:0.58rem;color:#2a78d6;border:1px solid #2a78d6;padding:1px 4px;margin-left:5px">ver.</span>'
+            : '<span style="font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-left:5px;opacity:0.8">est.</span>')
+        : '';
+
+      if (currentSport === 'baseball' || currentSport === 'volleyball') {
+        return `<tr>
+          <td class="td-school">${r.school}</td>
+          <td class="td-conf">${r.conference}</td>
+          <td class="td-record" style="white-space:nowrap">${nilDisplay}${nilTag}</td>
+        </tr>`;
+      }
+
+      const isNA = r.top_player === 'N/A';
+      const hasPlayer = r.top_player && !isNA;
+      const na = '<span style="color:var(--text-muted);font-size:0.75rem">N/A</span>';
+      const playerName = isNA ? na : (hasPlayer ? r.top_player : '<span style="color:var(--text-muted)">—</span>');
+      const playerPos = isNA ? na : (hasPlayer ? r.top_player_pos : '');
+      const playerClass = isNA ? na : (hasPlayer ? r.top_player_class : '');
+      const playerNilRaw = isNA ? na : (hasPlayer && r.top_player_nil ? '$' + r.top_player_nil.toLocaleString() : '—');
+      const playerTag = hasPlayer && r.top_player_nil
+        ? (r.top_player_verified
+          ? '<span style="font-size:0.58rem;color:#2a78d6;border:1px solid #2a78d6;padding:1px 4px;margin-left:4px">ver.</span>'
+          : '<span style="font-size:0.58rem;color:var(--accent);border:1px solid rgba(201,168,76,0.5);padding:1px 4px;margin-left:4px">est.</span>')
+        : '';
+
+      return `<tr>
+        <td class="td-school">${r.school}</td>
+        <td class="td-conf">${r.conference}</td>
+        <td class="td-record" style="white-space:nowrap">${nilDisplay}${nilTag}</td>
+        <td class="td-record" style="white-space:nowrap">${playerName}</td>
+        <td class="td-conf">${playerPos}</td>
+        <td class="td-conf">${playerClass}</td>
+        <td class="td-record" style="white-space:nowrap">${playerNilRaw}${playerTag}</td>
+      </tr>`;
+    }
+  }
+
+  function activateSportTab(sport) {
+    const btn = document.querySelector(`.sport-tab-btn[data-sport="${sport}"]`);
+    if (!btn) return;
+    document.querySelectorAll('.sport-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    initTable(sport);
+  }
+
+  function initTable(sport) {
+    currentSport = sport;
+    currentConf = '';
+    sortCol = null;
+    sortDir = 'asc';
+    if (currentView === 'nil') sortCol = 'nil';
+    document.getElementById('schoolSearch').value = '';
+    currentSearch = '';
+    populateConfFilter(sport);
+    document.querySelectorAll('.data-table th').forEach(th => { th.classList.remove('sorted-asc','sorted-desc'); });
+    renderTable();
+  }
+
+  document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentView = btn.dataset.view;
+      renderTable();
+    });
+  });
+
+  document.querySelectorAll('.sport-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateSportTab(btn.dataset.sport));
+  });
+
+  document.getElementById('confFilter').addEventListener('change', e => {
+    currentConf = e.target.value;
+    renderTable();
+  });
+
+  document.getElementById('schoolSearch').addEventListener('input', e => {
+    currentSearch = e.target.value;
+    renderTable();
+  });
+
+  document.getElementById('tableHead').addEventListener('click', e => {
+    const th = e.target.closest('th');
+    if (!th) return;
+    const i = [...th.parentElement.children].indexOf(th);
+    const standingsCols = ['school','conference','record','conf_record','conf_finish','postseason'];
+    const nilCols = ['school','conference','nil','top_player','top_player_pos','top_player_class','top_player_nil'];
+    const colKeys = currentView === 'standings' ? standingsCols : nilCols;
+    const key = colKeys[i];
+    if (sortCol === key) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = key; sortDir = 'asc';
+    }
+    document.querySelectorAll('.data-table th').forEach(t => t.classList.remove('sorted-asc','sorted-desc'));
+    th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+    renderTable();
+  });
+
+  // Direct-link support: data.html?sport=basketball
+  const requestedSport = new URLSearchParams(location.search).get('sport');
+  if (requestedSport && sportLabels[requestedSport]) {
+    activateSportTab(requestedSport);
+  } else {
+    initTable('football');
+  }
+</script>
+</body>
+</html>

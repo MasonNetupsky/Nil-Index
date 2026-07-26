@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIL Index — College Athletics Compensation Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #0b1629;
+      --navy-mid:    #132040;
+      --navy-light:  #1a2d55;
+      --black:       #06090f;
+      --white:       #ffffff;
+      --off-white:   #f4f6fa;
+      --light-gray:  #e8ecf3;
+      --mid-gray:    #c2cad8;
+      --text-dark:   #1a2035;
+      --text-muted:  #6b7a99;
+      --accent:      #c9a84c;
+      --border-dark: #1e2d4a;
+      --border-light:#dde3ef;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--text-dark);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 52px;
+      height: 64px;
+      background: var(--navy);
+      border-bottom: 1px solid var(--border-dark);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--white);
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600; font-size: 0.82rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--navy); background: var(--white);
+      padding: 9px 22px; border: none; cursor: pointer;
+      transition: background 0.2s; text-decoration: none; display: inline-block;
+    }
+    .nav-cta:hover { background: var(--off-white); }
+    .nav-ai-cta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--navy); background: var(--accent);
+      padding: 9px 22px; border: none; cursor: pointer;
+      transition: background 0.2s; text-decoration: none; display: inline-block;
+      margin-left: 14px;
+    }
+    .nav-ai-cta:hover { background: var(--white); }
+
+    /* HERO — dark navy */
+    .hero {
+      min-height: 100vh;
+      background: var(--navy);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 64px 52px 0;
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px;
+      z-index: 0;
+    }
+    .hero-glow {
+      position: absolute; top: -180px; right: -180px;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%);
+      z-index: 0; pointer-events: none;
+    }
+    .hero-left { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 2px; background: var(--accent); }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.8rem, 7.5vw, 7.5rem);
+      line-height: 0.92; letter-spacing: 0.01em; color: var(--white);
+    }
+    .hero-title .outline { -webkit-text-stroke: 1.5px rgba(255,255,255,0.4); color: transparent; }
+    .hero-title .accent { color: var(--accent); }
+    .hero-sub {
+      margin-top: 28px; font-size: 1rem; font-weight: 300;
+      color: rgba(255,255,255,0.55); max-width: 500px; line-height: 1.75;
+    }
+    .hero-actions { margin-top: 40px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+
+    .btn-white {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.88rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--navy); background: var(--white);
+      padding: 14px 36px; border: 2px solid var(--white);
+      cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s;
+    }
+    .btn-white:hover { background: transparent; color: var(--white); }
+
+    .btn-outline-white {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+      font-size: 0.88rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); background: transparent;
+      padding: 14px 36px; border: 2px solid rgba(255,255,255,0.25);
+      cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s;
+    }
+    .btn-outline-white:hover { border-color: var(--white); color: var(--white); }
+
+    .btn-navy {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.88rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--white); background: var(--navy);
+      padding: 14px 36px; border: 2px solid var(--navy);
+      cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s;
+    }
+    .btn-navy:hover { background: transparent; color: var(--navy); }
+
+    /* hero right */
+    .hero-right { position: relative; z-index: 1; height: 560px; }
+    .hero-img-main {
+      position: absolute; top: 40px; left: 0;
+      width: 75%; height: 380px; object-fit: cover; object-position: center top;
+      filter: grayscale(20%) contrast(1.05);
+    }
+    .hero-img-secondary {
+      position: absolute; bottom: 0; right: 0;
+      width: 52%; height: 240px; object-fit: cover;
+      filter: grayscale(20%) contrast(1.05);
+      border: 3px solid var(--navy-mid);
+    }
+    .hero-stat-pill {
+      position: absolute; top: 0; right: 60px;
+      background: var(--white); color: var(--navy);
+      padding: 12px 20px; font-family: 'Barlow Condensed', sans-serif;
+    }
+    .hero-stat-pill .num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; display: block; color: var(--navy); }
+    .hero-stat-pill .lbl { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+
+    /* TICKER */
+    .ticker-wrap { background: var(--black); padding: 10px 0; overflow: hidden; white-space: nowrap; }
+    .ticker-inner { display: inline-block; animation: ticker 28s linear infinite; }
+    .ticker-inner span {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); padding: 0 40px;
+    }
+    .ticker-inner span::before { content: '◆'; margin-right: 40px; color: var(--accent); opacity: 0.7; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* STATS STRIP — white */
+    .stats-strip {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      background: var(--white); border-bottom: 2px solid var(--border-light);
+    }
+    .stat-cell {
+      padding: 44px 36px; border-right: 1px solid var(--border-light);
+      position: relative; overflow: hidden; transition: background 0.3s;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell:hover { background: var(--off-white); }
+    .stat-cell::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      height: 3px; width: 0; background: var(--navy); transition: width 0.5s ease;
+    }
+    .stat-cell:hover::after { width: 100%; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; color: var(--navy); line-height: 1; letter-spacing: 0.02em; }
+    .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 6px; }
+
+    /* SHARED */
+    section { padding: 100px 52px; }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+      font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::before { content: ''; display: block; width: 22px; height: 2px; }
+    .label-navy { color: var(--navy-light); }
+    .label-navy::before { background: var(--navy-light); }
+    .label-white { color: rgba(255,255,255,0.5); }
+    .label-white::before { background: rgba(255,255,255,0.5); }
+    .label-accent { color: var(--accent); }
+    .label-accent::before { background: var(--accent); }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.4rem, 4.5vw, 4rem); line-height: 0.95; letter-spacing: 0.02em; max-width: 680px;
+    }
+    .title-dark { color: var(--navy); }
+    .title-light { color: var(--white); }
+    .outline-dark { -webkit-text-stroke: 1px var(--navy); color: transparent; }
+    .outline-light { -webkit-text-stroke: 1px rgba(255,255,255,0.5); color: transparent; }
+
+    /* ABOUT — white bg */
+    .about-section {
+      background: var(--white);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .about-text p {
+      font-size: 0.97rem; font-weight: 300; line-height: 1.8;
+      color: var(--text-muted); margin-bottom: 18px;
+    }
+    .ncaa-badge {
+      display: inline-flex; align-items: center; gap: 12px;
+      margin-top: 28px; padding: 12px 20px;
+      border: 1px solid var(--border-light);
+      background: var(--off-white);
+    }
+    .ncaa-badge img { width: 36px; height: 36px; object-fit: contain; }
+    .ncaa-badge span {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .about-img { width: 100%; height: 420px; object-fit: cover; object-position: center; display: block; }
+    .about-card {
+      background: var(--navy); border: 1px solid var(--border-dark);
+      padding: 28px; position: relative; margin-top: 20px;
+    }
+    .about-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); }
+    .about-card-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 18px;
+    }
+    .sport-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border-dark); }
+    .sport-row:last-child { border-bottom: none; }
+    .sport-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.92rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--white); }
+    .sport-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border: 1px solid; }
+    .badge-accent { color: var(--accent); border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+    .badge-light { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2); }
+
+    /* FEATURES — off-white */
+    .features-section { background: var(--off-white); }
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 60px; }
+    .feature-card {
+      background: var(--white); padding: 40px 32px;
+      border: 1px solid var(--border-light);
+      position: relative; overflow: hidden; transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .feature-card:hover { box-shadow: 0 12px 40px rgba(11,22,41,0.1); transform: translateY(-3px); }
+    .feature-card::after { content: ''; position: absolute; top: 0; left: 0; height: 3px; width: 0; background: var(--navy); transition: width 0.4s ease; }
+    .feature-card:hover::after { width: 100%; }
+    .feature-num { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; color: var(--accent); opacity: 0.85; line-height: 1; position: absolute; top: 16px; right: 20px; user-select: none; transition: opacity 0.3s; }
+    .feature-card:hover .feature-num { opacity: 1; }
+    .feature-img { width: 100%; height: 130px; object-fit: cover; margin-bottom: 22px; }
+    .feature-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); margin-bottom: 10px; }
+    .feature-desc { font-size: 0.88rem; font-weight: 300; line-height: 1.65; color: var(--text-muted); }
+    .feature-link { margin-top:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy); }
+
+    /* SPORTS — navy */
+    .sports-section { background: var(--navy); }
+    .sports-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 60px; }
+    .sport-card { position: relative; overflow: hidden; cursor: pointer; }
+    .sport-card-img { width: 100%; height: 340px; object-fit: cover; object-position: center top; display: block; filter: grayscale(40%) contrast(1.05) brightness(0.85); transition: transform 0.5s ease, filter 0.4s; }
+    .sport-card:hover .sport-card-img { transform: scale(1.04); filter: grayscale(10%) contrast(1.05) brightness(0.9); }
+    .sport-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(11,22,41,0.97) 0%, rgba(11,22,41,0.4) 55%, transparent 100%);
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 28px 24px;
+    }
+    .sport-card-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.04em; line-height: 1.05; margin-bottom: 8px; color: var(--white); }
+    .sport-card-desc { font-size: 0.8rem; font-weight: 300; line-height: 1.6; color: rgba(255,255,255,0.55); max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .sport-card:hover .sport-card-desc { max-height: 80px; }
+    .sport-card-tag { margin-top: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+    .sport-card-links { margin-top: 14px; display: flex; gap: 14px; }
+    .sport-card-links a {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--white);
+      text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 2px;
+      position: relative; z-index: 2;
+    }
+    .sport-card-links a:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* IMAGE STRIP */
+    .image-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; height: 240px; }
+    .strip-img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(30%) brightness(0.9); transition: filter 0.4s; }
+    .strip-img:hover { filter: grayscale(0%) brightness(1); }
+
+    /* AI TOOL — black */
+    .ai-section { background: var(--black); position: relative; overflow: hidden; }
+    .ai-section::before { content: 'AI'; position: absolute; right: -80px; top: 50%; transform: translateY(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 32vw; color: rgba(255,255,255,0.02); pointer-events: none; line-height: 1; }
+    .ai-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; z-index: 1; }
+    .ai-prompt-mock { background: var(--navy); border: 1px solid var(--border-dark); font-family: 'Barlow Condensed', sans-serif; }
+    .ai-prompt-bar { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border-dark); }
+    .ai-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .ai-dot-white { background: var(--white); opacity: 0.4; }
+    .ai-dot-accent { background: var(--accent); }
+    .ai-dot-gray { background: rgba(255,255,255,0.2); }
+    .ai-prompt-title { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-left: 4px; }
+    .ai-prompt-body { padding: 24px 20px; }
+    .ai-query { font-size: 0.88rem; color: var(--accent); margin-bottom: 20px; line-height: 1.5; }
+    .ai-query::before { content: '> '; opacity: 0.5; }
+    .ai-response { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.75; border-left: 2px solid var(--border-dark); padding-left: 16px; }
+    .ai-cursor { display: inline-block; width: 7px; height: 13px; background: var(--white); margin-left: 4px; vertical-align: middle; animation: blink 1s step-end infinite; opacity: 0.6; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .ai-text p { font-size: 0.97rem; font-weight: 300; line-height: 1.8; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+
+    /* CONFERENCES — white */
+    .conferences-section { background: var(--white); }
+    .conf-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 48px; }
+    .conf-chip { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 20px; border: 1px solid var(--border-light); color: var(--text-muted); cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+    .conf-chip:hover, .conf-chip.active { border-color: var(--navy); color: var(--navy); background: var(--off-white); }
+
+    /* FOUNDER — off-white */
+    .founder-section { background: var(--off-white); }
+    .founder-card { display: flex; align-items: center; gap: 48px; margin-top: 44px; }
+    .founder-photo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--navy); }
+    .founder-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin-bottom: 10px; }
+    .founder-bio { font-size: 0.92rem; font-weight: 300; line-height: 1.75; color: var(--text-muted); max-width: 640px; }
+    .founder-email { display: inline-block; margin-top: 14px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; }
+    .founder-email:hover { color: var(--accent); border-color: var(--accent); }
+    @media (max-width: 640px) { .founder-card { flex-direction: column; text-align: center; gap: 24px; } }
+
+    /* CTA BANNER — navy */
+    .cta-banner { background: var(--navy); padding: 80px 52px; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; position: relative; overflow: hidden; }
+    .cta-banner::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; }
+    .cta-banner-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 4vw, 3.6rem); color: var(--white); line-height: 1; max-width: 620px; position: relative; z-index: 1; }
+    .cta-banner-actions { position: relative; z-index: 1; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* FOOTER — black */
+    footer { background: var(--black); padding: 64px 52px 36px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; flex-wrap: wrap; margin-bottom: 52px; }
+    .footer-brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em; color: var(--white); }
+    .footer-brand-name span { color: var(--accent); }
+    .footer-tagline { font-size: 0.84rem; font-weight: 300; color: rgba(255,255,255,0.3); margin-top: 8px; max-width: 260px; line-height: 1.55; }
+    .footer-links-group h4 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+    .footer-links-group ul { list-style: none; }
+    .footer-links-group li { margin-bottom: 10px; }
+    .footer-links-group a { font-size: 0.84rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .footer-links-group a:hover { color: var(--white); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.76rem; color: rgba(255,255,255,0.25); }
+    .footer-thesis-note { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+    .footer-thesis-note span { color: var(--accent); }
+
+    /* FADE IN */
+    .fade-in { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* METHODOLOGY SECTION */
+    .methodology-section { background: var(--navy); }
+    .methodology-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 56px; align-items: start; }
+    .methodology-block { margin-bottom: 0; }
+    .methodology-block-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .methodology-block-title::before { content: ''; display: block; width: 16px; height: 2px; background: var(--accent); }
+    .methodology-item {
+      border-left: 2px solid var(--border-dark);
+      padding: 16px 20px; margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .methodology-item:hover { border-color: var(--accent); }
+    .methodology-item-label {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--white); margin-bottom: 6px;
+    }
+    .methodology-item-text {
+      font-size: 0.85rem; font-weight: 300; line-height: 1.7;
+      color: rgba(255,255,255,0.45);
+    }
+    .methodology-disclaimer {
+      margin-top: 48px; padding: 24px 28px;
+      border: 1px solid rgba(201,168,76,0.25);
+      background: rgba(201,168,76,0.05);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .methodology-disclaimer-icon {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+      color: var(--accent); line-height: 1; flex-shrink: 0; margin-top: 2px;
+    }
+    .methodology-disclaimer-text {
+      font-size: 0.82rem; font-weight: 300; line-height: 1.7;
+      color: rgba(255,255,255,0.45);
+    }
+    .methodology-disclaimer-text strong {
+      color: var(--accent); font-weight: 600;
+    }
+    @media (max-width: 960px) {
+      .methodology-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 960px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; min-height: auto; }
+      .hero-right { display: none; }
+      section { padding: 72px 24px; }
+      .about-section, .ai-inner { grid-template-columns: 1fr; gap: 48px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .sports-grid { grid-template-columns: 1fr 1fr; }
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .image-strip { grid-template-columns: 1fr; height: auto; }
+      .strip-img { height: 180px; }
+      .cta-banner { padding: 56px 24px; }
+      footer { padding: 48px 24px 28px; }
+    }
+    @media (max-width: 540px) {
+      .sports-grid { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">NIL<span>INDEX</span></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#sports">Sports</a></li>
+      <li><a href="#conferences">Conferences</a></li>
+      <li><a href="#methodology">Methodology</a></li>
+      <li><a href="data.html">Data</a></li>
+      <li><a href="visuals.html">Visualizations</a></li>
+    </ul>
+    <a href="data.html" class="nav-cta">Explore Data</a>
+    <a href="ai.html" class="nav-ai-cta">AI Assistant</a>
+  </nav>
+
+  <!-- HERO — navy -->
+  <section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-left">
+      <div class="hero-eyebrow">NIL Index — Est. 2026</div>
+      <h1 class="hero-title">
+        FOLLOW<br>
+        THE <span class="accent">MONEY</span><br>
+        <span class="outline">IN COLLEGE</span><br>
+        ATHLETICS
+      </h1>
+      <p class="hero-sub">
+        NIL changed college sports in 2021. The money has been flowing ever since — but nobody has put it all in one place. NIL Index tracks compensation across sports, conferences, and schools so athletes, administrators, and researchers can actually see what's going on.
+      </p>
+      <div class="hero-actions">
+        <a href="data.html" class="btn-white">Explore the Data</a>
+        <a href="#about" class="btn-outline-white">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img class="hero-img-main" src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&q=80" alt="College football stadium" />
+      <img class="hero-img-secondary" src="images/hero-secondary.jpg" alt="College athletics action" />
+      <div class="hero-stat-pill">
+        <span class="num">$1B+</span>
+        <span class="lbl">NIL Market Size</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER — black -->
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-inner">
+      <span>Football</span><span>Men's Basketball</span><span>Men's Baseball</span><span>Women's Volleyball</span><span>NIL Compensation</span><span>Conference Spending</span><span>Competitive Outcomes</span><span>Data Transparency</span><span>Football</span><span>Men's Basketball</span><span>Men's Baseball</span><span>Women's Volleyball</span><span>NIL Compensation</span><span>Conference Spending</span><span>Competitive Outcomes</span><span>Data Transparency</span>
+    </div>
+  </div>
+
+  <!-- STATS STRIP — white -->
+  <div class="stats-strip fade-in">
+    <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label">Sports Tracked</div></div>
+    <div class="stat-cell"><div class="stat-num">130+</div><div class="stat-label">Programs Analyzed</div></div>
+    <div class="stat-cell"><div class="stat-num">10+</div><div class="stat-label">Conferences Covered</div></div>
+    <div class="stat-cell"><div class="stat-num">2021</div><div class="stat-label">NIL Era Begins</div></div>
+  </div>
+
+  <!-- ABOUT — white -->
+  <section class="about-section fade-in" id="about">
+    <div class="about-text">
+      <div class="section-label label-navy">About the Project</div>
+      <h2 class="section-title title-dark">WHERE DOES THE<br><span class="outline-dark">MONEY GO?</span></h2>
+      <p style="margin-top:28px;">
+        Since the NCAA opened the door to NIL compensation in 2021, billions of dollars have moved through college athletics. Most of it with very little transparency.
+      </p>
+      <p>
+        NIL Index is a research project that centralizes and visualizes compensation data across sports, conferences, and schools. The core question: does spending more actually lead to winning more? The data will tell us.
+      </p>
+      <p>
+        This site sits at the intersection of sports business and data journalism — built as an honors thesis at the University of Arizona, with an AI-powered tool layered in to make the data accessible to anyone who wants to dig.
+      </p>
+      <a href="#features" class="btn-navy" style="margin-top:16px;">See How It Works</a>
+    </div>
+    <div class="about-img-wrap">
+
+      <div class="about-card">
+        <div class="about-card-title">Sports in Focus</div>
+        <div class="sport-row"><span class="sport-name">Football</span><span class="sport-badge badge-accent">Revenue Sport</span></div>
+        <div class="sport-row"><span class="sport-name">Men's Basketball</span><span class="sport-badge badge-accent">Revenue Sport</span></div>
+        <div class="sport-row"><span class="sport-name">Men's Baseball</span><span class="sport-badge badge-light">Emerging NIL</span></div>
+        <div class="sport-row"><span class="sport-name">Women's Volleyball</span><span class="sport-badge badge-light">Emerging NIL</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGE STRIP -->
+  <div class="image-strip">
+    <img class="strip-img" src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80" alt="Football" />
+    <img class="strip-img" src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=800&q=80" alt="Basketball" />
+    <img class="strip-img" src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&q=80" alt="Stadium" />
+  </div>
+
+  <!-- FEATURES — off-white -->
+  <section class="features-section fade-in" id="features">
+    <div class="section-label label-navy">What NIL Index Offers</div>
+    <h2 class="section-title title-dark">BUILT FOR<br><span class="outline-dark">DEPTH AND CLARITY</span></h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="window.location.href='visuals.html'" style="cursor:pointer;">
+        <div class="feature-num">01</div>
+        <img class="feature-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=75" alt="Data visualization" />
+        <div class="feature-title">Interactive Visualizations</div>
+        <p class="feature-desc">Charts and graphs that make compensation data readable at a glance. Filter by sport, conference, school, or year. Trends that would take hours in a spreadsheet show up in seconds here.</p>
+        <div class="feature-link">Launch Visualizations →</div>
+      </div>
+      <div class="feature-card" onclick="window.location.href='ai.html'" style="cursor:pointer;">
+        <div class="feature-num">02</div>
+        <img class="feature-img" src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=75" alt="AI interface" />
+        <div class="feature-title">AI Team Analyst</div>
+        <p class="feature-desc">Ask real questions about your team — records, top earners, win projections based on NIL spend, player performance projections, even pre-NIL-era "what would they have made" estimates. Backed by live data and web search.</p>
+        <div class="feature-link">Ask the AI Assistant →</div>
+      </div>
+      <div class="feature-card" onclick="window.location.href='correlation.html'" style="cursor:pointer;">
+        <div class="feature-num">03</div>
+        <img class="feature-img" src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&q=75" alt="Competition" />
+        <div class="feature-title">Competitive Correlation</div>
+        <p class="feature-desc">Do schools that spend more win more? NIL Index looks at the relationship between investment and outcomes across seasons, sports, and conferences. The answer is more complicated than you'd think.</p>
+        <div class="feature-link">View Correlation Analysis →</div>
+      </div>
+      <div class="feature-card" onclick="window.location.href='data.html'" style="cursor:pointer;">
+        <div class="feature-num">04</div>
+        <img class="feature-img" src="images/feature-04-school-profiles.jpg" alt="School-by-school profiles" />
+        <div class="feature-title">School-by-School Profiles</div>
+        <p class="feature-desc">Pull up any program and see NIL spend across all tracked sports. Stack it against conference peers or the national average — useful for athletes making decisions and researchers building arguments alike.</p>
+        <div class="feature-link">View School Data →</div>
+      </div>
+      <div class="feature-card" onclick="window.location.href='#conferences'" style="cursor:pointer;">
+        <div class="feature-num">05</div>
+        <img class="feature-img" src="images/feature-05-conference.webp" alt="Conference breakdown" />
+        <div class="feature-title">Conference Breakdowns</div>
+        <p class="feature-desc">The SEC, Big Ten, Big 12, ACC and beyond — conference affiliation shapes NIL market size in ways that aren't always obvious. See which conferences are running away with it and which are playing catch-up.</p>
+        <div class="feature-link">Browse Conferences →</div>
+      </div>
+      <div class="feature-card" onclick="window.location.href='updates.html'" style="cursor:pointer;">
+        <div class="feature-num">06</div>
+        <img class="feature-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=75" alt="Updates" />
+        <div class="feature-title">Ongoing Data Updates</div>
+        <p class="feature-desc">NIL is still being worked out in real time. As new data comes in, the tracker stays current — so what you're looking at actually reflects where things stand, not where they were six months ago.</p>
+        <div class="feature-link">See Latest Updates →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPORTS — navy -->
+  <section class="sports-section fade-in" id="sports">
+    <div class="section-label label-white">Sports Coverage</div>
+    <h2 class="section-title title-light">FOUR SPORTS.<br><span class="outline-light">ONE PICTURE.</span></h2>
+    <div class="sports-grid">
+      <div class="sport-card">
+        <img class="sport-card-img" src="images/sport-football.jpg" alt="Football" />
+        <div class="sport-card-overlay">
+          <div class="sport-card-name">Football</div>
+          <p class="sport-card-desc">The king of college NIL. Track collective deals, top earners, and how the recruiting arms race is reshaping programs at every level.</p>
+          <div class="sport-card-tag">Revenue Driver</div>
+          <div class="sport-card-links">
+            <a href="data.html?sport=football">Data</a>
+            <a href="visuals.html?sport=football">Visuals</a>
+          </div>
+        </div>
+      </div>
+      <div class="sport-card">
+        <img class="sport-card-img" src="images/sport-basketball.webp" alt="Men's Basketball" />
+        <div class="sport-card-overlay">
+          <div class="sport-card-name">Men's Basketball</div>
+          <p class="sport-card-desc">March Madness meets money. Which programs are building NIL war chests — and does it actually show up in the bracket?</p>
+          <div class="sport-card-tag">Revenue Driver</div>
+          <div class="sport-card-links">
+            <a href="data.html?sport=basketball">Data</a>
+            <a href="visuals.html?sport=basketball">Visuals</a>
+          </div>
+        </div>
+      </div>
+      <div class="sport-card">
+        <img class="sport-card-img" src="images/sport-baseball.avif" alt="Men's Baseball" />
+        <div class="sport-card-overlay">
+          <div class="sport-card-name">Men's Baseball</div>
+          <p class="sport-card-desc">An emerging NIL market with a wrinkle nobody else tracks — how draft eligibility complicates what athletes can actually commit to.</p>
+          <div class="sport-card-tag">Emerging Market</div>
+          <div class="sport-card-links">
+            <a href="data.html?sport=baseball">Data</a>
+            <a href="visuals.html?sport=baseball">Visuals</a>
+          </div>
+        </div>
+      </div>
+      <div class="sport-card">
+        <img class="sport-card-img" src="images/sport-volleyball.jpg" alt="Women's Volleyball" />
+        <div class="sport-card-overlay">
+          <div class="sport-card-name">Women's Volleyball</div>
+          <p class="sport-card-desc">Viewership is up, brand deals are following, and the NIL market here is moving faster than most people realize.</p>
+          <div class="sport-card-tag">Fastest Growing</div>
+          <div class="sport-card-links">
+            <a href="data.html?sport=volleyball">Data</a>
+            <a href="visuals.html?sport=volleyball">Visuals</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI TOOL — black -->
+  <section class="ai-section fade-in" id="ai-tool">
+    <div class="ai-inner">
+      <div class="ai-text">
+        <div class="section-label label-accent">AI-Powered Tool</div>
+        <h2 class="section-title title-light" style="margin-bottom:24px;">ASK THE<br><span class="outline-light">DATA ANYTHING</span></h2>
+        <p>NIL Index has a live AI assistant that answers real questions about your team — records, rosters, top earners, and win totals projected from actual NIL spend. It pulls current news and stats from the web too, so it's never stuck in the past.</p>
+        <p>Curious what a legend from before the NIL era could have made today? Ask. It'll estimate it, adjusted for inflation and market context, and tell you it's an estimate.</p>
+        <a href="ai.html" class="nav-ai-cta" style="margin-left:0; margin-top:8px;">Open the AI Assistant →</a>
+      </div>
+      <div class="ai-prompt-mock">
+        <div class="ai-prompt-bar">
+          <div class="ai-dot ai-dot-white"></div>
+          <div class="ai-dot ai-dot-accent"></div>
+          <div class="ai-dot ai-dot-gray"></div>
+          <span class="ai-prompt-title">NIL Index — AI Assistant</span>
+        </div>
+        <div class="ai-prompt-body">
+          <div class="ai-query">Which SEC schools had the highest NIL spend in football last year?</div>
+          <div class="ai-response">
+            Looking at 2024 data, the top SEC programs by estimated NIL collective spend were Texas A&M, Alabama, and Georgia — each running collectives reported in the $10M+ range. Texas held the highest single-program figure after joining the conference. The gap between those four and the rest of the SEC is wider than most assume.<span class="ai-cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFERENCES — white -->
+  <section class="conferences-section fade-in" id="conferences">
+    <div class="section-label label-navy">Conference Coverage</div>
+    <h2 class="section-title title-dark">EVERY<br><span class="outline-dark">MAJOR CONFERENCE</span></h2>
+    <p style="margin-top:20px; font-size:0.97rem; font-weight:300; color:var(--text-muted); max-width:540px; line-height:1.75;">
+      Where you play determines a lot about how much NIL money flows your way. Conference affiliation shapes market size, recruiting reach, and collective funding in ways that are hard to see without the data.
+    </p>
+    <div class="conf-list">
+      <a href="conference.html?conf=SEC" class="conf-chip">SEC</a>
+      <a href="conference.html?conf=Big Ten" class="conf-chip">Big Ten</a>
+      <a href="conference.html?conf=Big 12" class="conf-chip">Big 12</a>
+      <a href="conference.html?conf=ACC" class="conf-chip">ACC</a>
+      <a href="conference.html?conf=Pac-12" class="conf-chip">Pac-12</a>
+      <a href="conference.html?conf=AAC" class="conf-chip">AAC</a>
+      <a href="conference.html?conf=Sun Belt" class="conf-chip">Sun Belt</a>
+      <a href="conference.html?conf=Mountain West" class="conf-chip">Mountain West</a>
+      <a href="conference.html?conf=MAC" class="conf-chip">MAC</a>
+      <a href="conference.html?conf=C-USA" class="conf-chip">C-USA</a>
+      <a href="conference.html?conf=Independent" class="conf-chip">Independents</a>
+    </div>
+  </section>
+
+  <!-- METHODOLOGY — navy -->
+  <section class="methodology-section fade-in" id="methodology">
+    <div class="section-label label-accent">Data Methodology</div>
+    <h2 class="section-title title-light">HOW THE<br><span class="outline-light">NUMBERS WORK</span></h2>
+    <p style="margin-top:20px;font-size:0.97rem;font-weight:300;color:rgba(255,255,255,0.45);max-width:580px;line-height:1.75;">
+      NIL compensation is not centrally reported. The figures on this site are built from a combination of verified public data and structured estimates where official figures do not exist. Here is exactly how each number was produced.
+    </p>
+
+    <div class="methodology-grid">
+      <div>
+        <div class="methodology-block-title">Data Sources</div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">On3.com</div>
+          <div class="methodology-item-text">Primary source for individual player NIL valuations and team roster values. On3's proprietary algorithm combines reported deal data, collective contracts, and market comparables to estimate annual player compensation. Roster values aggregate individual valuations into a program total.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">Sportico.com</div>
+          <div class="methodology-item-text">Used for collective-level budget reporting and cross-referencing program spending. Sportico publishes annual NIL market analyses sourced from collective operators, athletic department disclosures, and industry insiders.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">NCAA MFRS Reports</div>
+          <div class="methodology-item-text">Schools are required to file annual financial reports (Membership Financial Reporting System) with the NCAA. These total operating expense figures — obtained via FOIA requests by outlets including Extra Points and Sportico — serve as anchor points for sports where direct NIL data is limited.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">Collective & Athletic Department Disclosures</div>
+          <div class="methodology-item-text">Where available, publicly reported collective budgets and school announcements about NIL fund commitments are incorporated directly as verified figures.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="methodology-block-title">Estimation Methodology</div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">Anchor Points</div>
+          <div class="methodology-item-text">For each sport, known figures from verified sources establish baseline values for the highest-spending programs. These serve as the upper bounds from which all estimates are scaled downward.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">Conference Tier Scaling</div>
+          <div class="methodology-item-text">Programs are grouped by conference (Power 4, Group of 5, other) and assigned a multiplier range relative to anchor points. SEC and Big Ten programs are estimated at higher levels reflecting documented market premiums in recruiting and collective funding.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">Program Prestige Modifiers</div>
+          <div class="methodology-item-text">Within each conference tier, adjustments are made based on postseason performance, historical recruiting rankings, and publicly reported collective activity. National champions and CFP/NCAA Tournament programs receive upward adjustments.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-item-label">Women's Volleyball Specific</div>
+          <div class="methodology-item-text">Because direct NIL figures for volleyball are rarely disclosed, estimates use total operating expenses (from NCAA MFRS reports) as a proxy, allocating approximately 15–25% as the NIL component — consistent with reporting from schools where both figures are available.</div>
+        </div>
+      </div>
+    </div>
+
+
+      <div class="methodology-item">
+        <div class="methodology-item-label">Baseball-Specific Methodology</div>
+        <div class="methodology-item-text">Baseball NIL is uniquely complex due to MLB draft eligibility — players can be drafted after their junior year (or out of high school), which shortens the window collectives have to retain talent and complicates year-over-year spending comparisons. Roster turnover driven by the draft, rather than NIL alone, is factored into how spending figures are interpreted relative to win totals.</div>
+      </div>
+      <div class="methodology-item">
+        <div class="methodology-item-label">Volleyball-Specific Methodology</div>
+        <div class="methodology-item-text">Women's volleyball NIL data is the least publicly reported of the four tracked sports. Figures here lean most heavily on the operating-expense proxy method described above, cross-checked against any publicly announced collective commitments specific to volleyball programs.</div>
+      </div>
+    <div class="methodology-disclaimer">
+      <div class="methodology-disclaimer-icon">!</div>
+      <div class="methodology-disclaimer-text">
+        <strong>Important — Understanding These Numbers:</strong> True NIL collective budgets are not publicly disclosed by nearly any school. Figures on this site combine verified reporting where it exists with structured estimates elsewhere, and are marked "ver." or "est." throughout the data tables accordingly. Treat every figure as directional, not exact — the goal is to show relative scale and trends across schools and conferences, not precise dollar amounts.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER — off-white -->
+  <section class="founder-section fade-in" id="about-founder">
+    <div class="section-label label-navy">Who's Behind This</div>
+    <h2 class="section-title title-dark">ABOUT<br><span class="outline-dark">THE FOUNDER</span></h2>
+    <div class="founder-card">
+      <img class="founder-photo" src="images/founder-headshot.jpg" alt="Mason Netupsky" />
+      <div>
+        <div class="founder-name">Mason Netupsky</div>
+        <p class="founder-bio">Mason is a senior at the University of Arizona's Eller College of Management, studying Business Management. He currently works in football operations with the Carolina Panthers and previously interned with the University of Arizona Athletics marketing department. NIL Index grew out of his honors thesis — an attempt to bring transparency to one of college sports' most talked-about and least-understood topics.</p>
+        <a href="mailto:Masonnetupsky@gmail.com" class="founder-email">Masonnetupsky@gmail.com — questions or feedback</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER — navy -->
+  <div class="cta-banner fade-in">
+    <div class="cta-banner-title">READY TO SEE WHERE THE MONEY GOES?</div>
+    <div class="cta-banner-actions">
+      <a href="data.html" class="btn-white">Launch the Tracker</a>
+      <a href="visuals.html" class="btn-outline-white">View Visualizations</a>
+    </div>
+  </div>
+
+  <!-- FOOTER — black -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">NIL<span>INDEX</span></div>
+        <p class="footer-tagline">Tracking Name, Image and Likeness compensation in college athletics since 2026.</p>
+      </div>
+      <div class="footer-links-group">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="data.html">Dashboard</a></li>
+          <li><a href="data.html">By Sport</a></li>
+          <li><a href="#conferences">By Conference</a></li>
+          <li><a href="data.html">By School</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-group">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="ai.html">AI Assistant</a></li>
+          <li><a href="visuals.html">Visualizations</a></li>
+          <li><a href="data.html">Data Tables</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-group">
+        <h4>Research</h4>
+        <ul>
+          <li><a href="#about">About this Project</a></li>
+          <li><a href="#methodology">Methodology</a></li>
+          <li><a href="#methodology">Data Sources</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 NIL Index. All rights reserved.</span>
+      <span class="footer-thesis-note">Honors Thesis Project — <span>University of Arizona</span></span>
+    </div>
+  </footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.conf-chip').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      document.querySelectorAll('.conf-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

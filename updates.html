@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIL Index — Ongoing Updates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0b1629; --navy-mid: #132040; --navy-light: #1a2d55;
+      --black: #06090f; --white: #ffffff; --off-white: #f4f6fa;
+      --text-dark: #1a2035; --text-muted: #6b7a99;
+      --accent: #c9a84c; --border-dark: #1e2d4a; --border-light: #dde3ef;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 52px; height: 64px;
+      background: var(--navy); border-bottom: 1px solid var(--border-dark);
+    }
+    .nav-left { display: flex; align-items: center; gap: 14px; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-page-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+      padding: 4px 12px; border: 1px solid rgba(201,168,76,0.3); margin-left: 8px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    .nav-tab-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-tab-link:hover { color: var(--white); }
+    .nav-tab-link.current { color: var(--accent); }
+    .nav-ai-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      background: var(--accent); color: var(--navy); padding: 7px 16px; transition: all 0.2s;
+    }
+    .nav-ai-link:hover { background: var(--white); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--white); }
+    .nav-back::before { content: '←'; font-size: 0.9rem; }
+
+    /* HERO STRIP */
+    .page-hero {
+      padding: 100px 52px 40px;
+      background: var(--navy);
+      border-bottom: 1px solid var(--border-dark);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 800px; }
+    .page-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .page-eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem); line-height: 0.95;
+      letter-spacing: 0.02em; color: var(--white);
+    }
+    .page-title .outline { -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); color: transparent; }
+    .page-title .accent { color: var(--accent); }
+    .page-sub {
+      margin-top: 18px; font-size: 0.92rem; font-weight: 300;
+      color: rgba(255,255,255,0.45); max-width: 620px; line-height: 1.75;
+    }
+    .live-tag {
+      margin-top: 22px; display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+    }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #3ecf8e; box-shadow: 0 0 0 0 rgba(62,207,142,0.5); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(62,207,142,0.5); } 70% { box-shadow: 0 0 0 6px rgba(62,207,142,0); } 100% { box-shadow: 0 0 0 0 rgba(62,207,142,0); } }
+    #lastUpdated span { color: var(--accent); }
+
+    /* FILTERS */
+    .filter-bar {
+      background: var(--navy); padding: 0 52px 20px;
+      border-bottom: 1px solid var(--border-dark);
+      display: flex; gap: 10px; flex-wrap: wrap;
+      position: sticky; top: 64px; z-index: 90; padding-top: 20px;
+    }
+    .filter-pill {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 8px 18px; border: 1px solid var(--border-dark);
+      background: transparent; color: rgba(255,255,255,0.45);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-pill:hover { border-color: rgba(201,168,76,0.4); color: var(--white); }
+    .filter-pill.active { background: var(--accent); color: var(--navy); border-color: var(--accent); }
+
+    /* FEED */
+    .feed-main { padding: 48px 52px 80px; max-width: 880px; margin: 0 auto; }
+    .feed-item {
+      border-left: 2px solid var(--border-dark);
+      padding: 4px 0 32px 28px; position: relative;
+    }
+    .feed-item::before {
+      content: ''; position: absolute; left: -5px; top: 6px;
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    }
+    .feed-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .feed-date { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .feed-tag {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 9px;
+      border: 1px solid rgba(201,168,76,0.4); color: var(--accent);
+    }
+    .feed-headline { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.01em; color: var(--white); line-height: 1.2; margin-bottom: 8px; }
+    .feed-summary { font-size: 0.9rem; font-weight: 300; color: rgba(255,255,255,0.55); line-height: 1.65; margin-bottom: 10px; }
+    .feed-source { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.06em; color: var(--accent); text-decoration: none; }
+    .feed-source:hover { text-decoration: underline; }
+    .feed-empty { padding: 60px 0; text-align: center; color: rgba(255,255,255,0.3); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .feed-footnote {
+      margin-top: 8px; padding: 20px 24px; border-left: 2px solid var(--accent);
+      background: rgba(201,168,76,0.05); font-size: 0.82rem; font-weight: 300;
+      color: rgba(255,255,255,0.5); line-height: 1.7;
+    }
+
+    /* FOOTER */
+    .page-footer {
+      background: var(--black); padding: 36px 52px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); }
+    .footer-brand span { color: var(--accent); }
+    .footer-note { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+    @media (max-width: 960px) {
+      nav, .page-hero, .feed-main, .filter-bar, .page-footer { padding-left: 24px; padding-right: 24px; }
+      .nav-right { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">NIL<span>INDEX</span></a>
+      <span class="nav-page-title">Updates</span>
+    </div>
+    <div class="nav-right">
+      <a href="data.html" class="nav-tab-link">Data</a>
+      <a href="visuals.html" class="nav-tab-link">Visuals</a>
+      <a href="correlation.html" class="nav-tab-link">Correlation</a>
+      <a href="updates.html" class="nav-tab-link current">Updates</a>
+      <a href="ai.html" class="nav-ai-link">AI Assistant</a>
+      <a href="index.html" class="nav-back">Back to Home</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">NIL News &amp; Policy</div>
+      <h1 class="page-title">
+        ONGOING<br>
+        <span class="accent">NIL</span> <span class="outline">UPDATES</span>
+      </h1>
+      <p class="page-sub">
+        A running feed of the most relevant NIL news — deals, valuations, and policy shifts across football, basketball, baseball, and volleyball, plus anything reshaping the market more broadly. This feed refreshes automatically as new developments break.
+      </p>
+      <div class="live-tag"><span class="live-dot"></span> Auto-updating feed &nbsp;·&nbsp; <span id="lastUpdated">Loading…</span></div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-pill active" data-tag="All">All</button>
+    <button class="filter-pill" data-tag="Football">Football</button>
+    <button class="filter-pill" data-tag="Basketball">Basketball</button>
+    <button class="filter-pill" data-tag="Baseball">Baseball</button>
+    <button class="filter-pill" data-tag="Volleyball">Volleyball</button>
+    <button class="filter-pill" data-tag="Policy">Policy</button>
+  </div>
+
+  <div class="feed-main">
+    <div id="feedList"></div>
+    <div class="feed-footnote">
+      Items are gathered from public NIL reporting (On3, Business of College Sports, and other industry outlets) and added automatically as new developments break — no manual uploads required. Always click through to the source for full context before treating a figure as final.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-brand">NIL<span>INDEX</span></div>
+    <div class="footer-note">NIL figures are estimates. See methodology on the main site for full sourcing details. © 2026 NIL Index.</div>
+  </div>
+
+<script>
+  let allItems = [];
+  let currentFilter = 'All';
+
+  function timeAgo(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+    if (days <= 0) return 'Today';
+    if (days === 1) return '1 day ago';
+    if (days < 30) return days + ' days ago';
+    const months = Math.floor(days / 30);
+    return months === 1 ? '1 month ago' : months + ' months ago';
+  }
+
+  function render() {
+    const list = document.getElementById('feedList');
+    const items = allItems.filter(i => currentFilter === 'All' || i.tag === currentFilter);
+    if (items.length === 0) {
+      list.innerHTML = '<div class="feed-empty">No updates in this category yet</div>';
+      return;
+    }
+    list.innerHTML = items.map(i => `
+      <div class="feed-item">
+        <div class="feed-meta">
+          <span class="feed-date">${i.date_display} · ${timeAgo(i.date)}</span>
+          <span class="feed-tag">${i.tag}</span>
+        </div>
+        <div class="feed-headline">${i.headline}</div>
+        <div class="feed-summary">${i.summary}</div>
+        <a class="feed-source" href="${i.source_url}" target="_blank" rel="noopener noreferrer">Source: ${i.source_name} →</a>
+      </div>
+    `).join('');
+  }
+
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.tag;
+      render();
+    });
+  });
+
+  fetch('js/updates-data.json')
+    .then(r => r.json())
+    .then(data => {
+      allItems = data.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+      const newest = allItems[0];
+      document.getElementById('lastUpdated').innerHTML = newest ? `Last update: <span>${newest.date_display}</span>` : 'No updates yet';
+      render();
+    })
+    .catch(() => {
+      document.getElementById('feedList').innerHTML = '<div class="feed-empty">Unable to load updates right now</div>';
+      document.getElementById('lastUpdated').textContent = 'Unavailable';
+    });
+</script>
+</body>
+</html>

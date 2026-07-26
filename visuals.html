@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIL Index — Interactive Visualizations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0b1629; --navy-mid: #132040; --navy-light: #1a2d55;
+      --black: #06090f; --white: #ffffff; --off-white: #f4f6fa;
+      --text-dark: #1a2035; --text-muted: #6b7a99;
+      --accent: #c9a84c; --border-dark: #1e2d4a; --border-light: #dde3ef;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 52px; height: 64px;
+      background: var(--navy); border-bottom: 1px solid var(--border-dark);
+    }
+    .nav-left { display: flex; align-items: center; gap: 14px; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-page-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+      padding: 4px 12px; border: 1px solid rgba(201,168,76,0.3); margin-left: 8px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    .nav-tab-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-tab-link:hover { color: var(--white); }
+    .nav-tab-link.current { color: var(--accent); }
+    .nav-ai-link {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      background: var(--accent); color: var(--navy); padding: 7px 16px; transition: all 0.2s;
+    }
+    .nav-ai-link:hover { background: var(--white); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--white); }
+    .nav-back::before { content: '←'; font-size: 0.9rem; }
+
+    /* HERO STRIP */
+    .page-hero {
+      padding: 100px 52px 56px;
+      background: var(--navy);
+      border-bottom: 1px solid var(--border-dark);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 800px; }
+    .page-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .page-eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem); line-height: 0.92;
+      letter-spacing: 0.02em; color: var(--white);
+    }
+    .page-title .outline { -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); color: transparent; }
+    .page-title .accent { color: var(--accent); }
+    .page-sub {
+      margin-top: 20px; font-size: 0.95rem; font-weight: 300;
+      color: rgba(255,255,255,0.45); max-width: 600px; line-height: 1.75;
+    }
+    .page-meta {
+      margin-top: 24px; display: flex; gap: 24px; flex-wrap: wrap;
+    }
+    .page-meta-item {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.3);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .page-meta-item span { color: var(--accent); }
+
+    /* SPORT TABS */
+    .sport-tab-bar {
+      background: var(--navy); padding: 0 52px;
+      border-bottom: 1px solid var(--border-dark);
+      display: flex; gap: 0; position: sticky; top: 64px; z-index: 90;
+      overflow-x: auto;
+    }
+    .sport-tab-btn {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 18px 32px; border: none; background: transparent;
+      color: rgba(255,255,255,0.35); cursor: pointer; white-space: nowrap;
+      border-bottom: 3px solid transparent; transition: all 0.2s;
+    }
+    .sport-tab-btn:hover { color: rgba(255,255,255,0.7); }
+    .sport-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* MAIN CONTENT */
+    .visuals-main { padding: 52px 52px 80px; }
+    .sport-panel { display: none; }
+    .sport-panel.active { display: block; }
+
+    /* VISUAL GRID */
+    .visuals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .visual-card {
+      background: var(--navy-mid); border: 1px solid var(--border-dark);
+      padding: 32px; position: relative; transition: border-color 0.3s;
+    }
+    .visual-card:hover { border-color: rgba(201,168,76,0.3); }
+    .visual-card-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 4px;
+    }
+    .visual-card-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem;
+      color: var(--white); letter-spacing: 0.04em; margin-bottom: 8px; line-height: 1.1;
+    }
+    .visual-card-subtitle {
+      font-size: 0.8rem; font-weight: 300; color: rgba(255,255,255,0.35);
+      margin-bottom: 24px; line-height: 1.5;
+    }
+    .chart-wrap { position: relative; width: 100%; }
+    .visual-insight {
+      margin-top: 20px; padding: 14px 18px;
+      border-left: 2px solid var(--accent);
+      background: rgba(201,168,76,0.05);
+      font-size: 0.82rem; font-weight: 300; line-height: 1.65;
+      color: rgba(255,255,255,0.45);
+    }
+    .visual-insight strong { color: var(--accent); font-weight: 600; }
+
+    /* FINDINGS STRIP */
+    .findings-strip {
+      margin-top: 48px; padding: 32px;
+      background: var(--navy); border: 1px solid var(--border-dark);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .finding-item { }
+    .finding-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+      color: var(--accent); line-height: 1; letter-spacing: 0.02em;
+    }
+    .finding-label {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin-top: 4px;
+    }
+    .finding-desc {
+      font-size: 0.82rem; font-weight: 300; line-height: 1.6;
+      color: rgba(255,255,255,0.45); margin-top: 8px;
+    }
+
+    /* FOOTER */
+    .page-footer {
+      background: var(--black); padding: 36px 52px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); }
+    .footer-brand span { color: var(--accent); }
+    .footer-note { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+    @media (max-width: 960px) {
+      nav, .page-hero, .visuals-main, .sport-tab-bar, .page-footer { padding-left: 24px; padding-right: 24px; }
+      .visuals-grid { grid-template-columns: 1fr; }
+      .findings-strip { grid-template-columns: 1fr; }
+      .nav-right { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">NIL<span>INDEX</span></a>
+      <span class="nav-page-title">Visualizations</span>
+    </div>
+    <div class="nav-right">
+      <a href="data.html" class="nav-tab-link">Data</a>
+      <a href="visuals.html" class="nav-tab-link current">Visuals</a>
+      <a href="correlation.html" class="nav-tab-link">Correlation</a>
+      <a href="updates.html" class="nav-tab-link">Updates</a>
+      <a href="ai.html" class="nav-ai-link">AI Assistant</a>
+      <a href="index.html" class="nav-back">Back to Home</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">Interactive Visualizations</div>
+      <h1 class="page-title">
+        DOES SPENDING<br>
+        <span class="accent">MORE</span> <span class="outline">MEAN</span><br>
+        WINNING MORE?
+      </h1>
+      <p class="page-sub">
+        Four views into the relationship between NIL investment and competitive outcomes — across Football, Men's Basketball, Men's Baseball, and Women's Volleyball. The short answer: it depends on the sport.
+      </p>
+      <div class="page-meta">
+        <div class="page-meta-item"><span>4</span> Sports Analyzed</div>
+        <div class="page-meta-item"><span>270+</span> Programs</div>
+        <div class="page-meta-item"><span>4</span> Chart Types</div>
+        <div class="page-meta-item"><span>Est.</span> NIL Figures</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPORT TABS -->
+  <div class="sport-tab-bar">
+    <button class="sport-tab-btn active" data-panel="panel-football" data-sport="football">Football</button>
+    <button class="sport-tab-btn" data-panel="panel-basketball" data-sport="basketball">Men's Basketball</button>
+    <button class="sport-tab-btn" data-panel="panel-baseball" data-sport="baseball">Men's Baseball</button>
+    <button class="sport-tab-btn" data-panel="panel-volleyball" data-sport="volleyball">Women's Volleyball</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="visuals-main">
+
+    <!-- FOOTBALL -->
+    <div class="sport-panel active" id="panel-football">
+      <div class="visuals-grid">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 01</div>
+          <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
+          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="fb-top10"></canvas></div>
+          <div class="visual-insight"><strong>Texas leads at $40M</strong> — the highest figure of any tracked program in any sport. But LSU ($38M) won just 53.8% of its games, while Oregon spent the same and won 86.7% — spend gets you talent, not automatic wins.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 02</div>
+          <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
+          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="fb-conf"></canvas></div>
+          <div class="visual-insight">The <strong>SEC averages $29.95M per program</strong> — nearly 4x the depleted Pac-12's $7.5M. Conference realignment has concentrated football NIL money into a handful of leagues.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 03</div>
+          <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
+          <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="fb-scatter"></canvas></div>
+          <div class="visual-insight"><strong>Mixed correlation.</strong> Arkansas spent $22M and won just 16.7% of games, while several mid-tier spenders like Ole Miss ($35.2M) posted elite win rates. Roster turnover in the portal era adds noise year to year.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 04</div>
+          <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
+          <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="fb-postseason"></canvas></div>
+          <div class="visual-insight">CFP First Round teams averaged <strong>$36.9M in NIL</strong> vs. $20.6M for non-postseason programs — a 1.8x gap. The single national champion in this sample spent closer to the league median, a reminder that one data point can be an outlier.</div>
+        </div>
+      </div>
+
+      <div class="findings-strip">
+        <div class="finding-item">
+          <div class="finding-num">$40M</div>
+          <div class="finding-label">Texas — Top Football NIL Spend</div>
+          <div class="finding-desc">The highest figure of any tracked program in any sport — yet five of the top ten spenders won fewer than 75% of their games.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">4x</div>
+          <div class="finding-label">SEC vs. Pac-12 Spending Gap</div>
+          <div class="finding-desc">The SEC's $29.95M conference average dwarfs the depleted Pac-12's $7.5M in the realignment era.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">1.8x</div>
+          <div class="finding-label">CFP First Round vs. No Postseason</div>
+          <div class="finding-desc">Programs that reached the CFP averaged $36.9M in NIL spend vs. $20.6M for programs that missed the postseason entirely.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASKETBALL -->
+    <div class="sport-panel" id="panel-basketball">
+      <div class="visuals-grid">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 01</div>
+          <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
+          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bk-top10"></canvas></div>
+          <div class="visual-insight"><strong>Kentucky leads at $22M</strong> — nearly double Duke's $12M at #2 — yet Kentucky's 61.1% win rate trailed several lower-spending blue bloods like Michigan (92.5%).</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 02</div>
+          <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
+          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bk-conf"></canvas></div>
+          <div class="visual-insight">The <strong>SEC averages $9.09M per program</strong> — more than 14x C-USA's $633K. It's the widest conference NIL gap of any tracked sport.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 03</div>
+          <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
+          <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bk-scatter"></canvas></div>
+          <div class="visual-insight"><strong>Moderate correlation.</strong> Duke and Michigan both crack the top 10 in spend and win 90%+ of games, but Kentucky's outsized budget didn't buy an elite win rate — depth of roster matters as much as top-line spend.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 04</div>
+          <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
+          <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bk-postseason"></canvas></div>
+          <div class="visual-insight">Final Four / Champion teams averaged <strong>$9.38M in NIL</strong> vs. $3.33M for non-postseason programs — nearly a 3x gap, with a steady step-up at every round of the bracket.</div>
+        </div>
+      </div>
+
+      <div class="findings-strip">
+        <div class="finding-item">
+          <div class="finding-num">$22M</div>
+          <div class="finding-label">Kentucky — Top Basketball NIL Spend</div>
+          <div class="finding-desc">Nearly double Duke's $12M at #2 — but Kentucky's win rate trailed several lower-spending blue bloods.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">14x</div>
+          <div class="finding-label">SEC vs. C-USA Spending Gap</div>
+          <div class="finding-desc">The SEC averages $9.09M per program compared to just $633K in C-USA — the widest conference gap in the index.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">2.8x</div>
+          <div class="finding-label">Final Four/Champion vs. No Postseason</div>
+          <div class="finding-desc">Programs that reached the Final Four or won the title averaged $9.38M in NIL — nearly 3x the average for non-postseason teams.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASEBALL -->
+    <div class="sport-panel" id="panel-baseball">
+      <div class="visuals-grid">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 01</div>
+          <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
+          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bb-top10"></canvas></div>
+          <div class="visual-insight">The SEC owns every spot in the top 8. <strong>LSU leads at $1.8M</strong> despite finishing 30-28 — the most glaring example that baseball NIL investment doesn't guarantee wins the way it does in other sports.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 02</div>
+          <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
+          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bb-conf"></canvas></div>
+          <div class="visual-insight">The <strong>SEC averages $1.06M per program</strong> — nearly double the ACC at $636K and more than 4x the Big Ten at $342K. Conference affiliation is the single biggest predictor of how much a baseball program can spend.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 03</div>
+          <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
+          <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bb-scatter"></canvas></div>
+          <div class="visual-insight"><strong>Weak correlation in baseball.</strong> LSU spent the most and had a .517 win rate. Georgia spent $900K and won 79% of games. The MLB draft complicates retention — players who get drafted leave, regardless of NIL deals.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 04</div>
+          <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
+          <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="bb-postseason"></canvas></div>
+          <div class="visual-insight">CWS teams averaged <strong>$804K in NIL</strong> vs. $301K for programs that missed the postseason entirely — a 2.7x gap. The relationship exists, but individual outliers like LSU show spending alone doesn't get you there.</div>
+        </div>
+      </div>
+
+      <div class="findings-strip">
+        <div class="finding-item">
+          <div class="finding-num">$1.06M</div>
+          <div class="finding-label">SEC Average NIL per Program</div>
+          <div class="finding-desc">The highest conference average in college baseball — nearly double the next-closest ACC at $636K.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">2.7x</div>
+          <div class="finding-label">CWS Teams vs. No Postseason</div>
+          <div class="finding-desc">Programs that reached the College World Series spent on average 2.7x more than those that missed the postseason.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">$265K</div>
+          <div class="finding-label">Average FBS Baseball NIL Allocation</div>
+          <div class="finding-desc">Across 79 public FBS schools, baseball receives ~2.8% of total revenue sharing — averaging $265,593 per team.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOLLEYBALL -->
+    <div class="sport-panel" id="panel-volleyball">
+      <div class="visuals-grid">
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 01</div>
+          <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
+          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="vb-top10"></canvas></div>
+          <div class="visual-insight"><strong>Nebraska leads at $1.8M</strong> and went 33-1 — one of the clearest spend-to-performance correlations in all of college sports. Eight of the top 10 spenders won more than 78% of their matches.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 02</div>
+          <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
+          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="vb-conf"></canvas></div>
+          <div class="visual-insight">The <strong>Big Ten averages $444K</strong> per program — driven by Nebraska and Wisconsin. The SEC trails at $364K despite Texas A&M winning the national title, reflecting how one dominant spender can skew conference averages.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 03</div>
+          <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
+          <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="vb-scatter"></canvas></div>
+          <div class="visual-insight"><strong>Strong correlation in volleyball.</strong> The top 6 spenders all won 78%+ of their matches. Unlike baseball, volleyball programs can retain players through their full eligibility — NIL investment compounds over time.</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-eyebrow">Visual 04</div>
+          <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
+          <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
+          <div class="chart-wrap" style="height:300px;"><canvas id="vb-postseason"></canvas></div>
+          <div class="visual-insight">The national <strong>champion averaged $850K</strong> vs. $126K for non-postseason programs — a <strong>6.7x gap</strong>. The strongest postseason-NIL correlation of any tracked sport in this index.</div>
+        </div>
+      </div>
+
+      <div class="findings-strip">
+        <div class="finding-item">
+          <div class="finding-num">6.7x</div>
+          <div class="finding-label">Champion vs. No Postseason NIL Gap</div>
+          <div class="finding-desc">The national champion spent 6.7x more than the average non-postseason program — the sharpest correlation in any tracked sport.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">97.1%</div>
+          <div class="finding-label">Nebraska Win Rate</div>
+          <div class="finding-desc">The top NIL spender in volleyball went 33-1 — the highest win percentage among all tracked programs in any sport.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">$444K</div>
+          <div class="finding-label">Big Ten Average NIL per Program</div>
+          <div class="finding-desc">The highest conference average in volleyball, driven by Nebraska ($1.8M) and Wisconsin ($1M) anchoring the upper tier.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-brand">NIL<span>INDEX</span></div>
+    <div class="footer-note">NIL figures are estimates. See methodology on the main site for full sourcing details. © 2026 NIL Index.</div>
+  </div>
+
+<script>
+  // Tab switching
+  const tabButtons = document.querySelectorAll('.sport-tab-btn');
+  function activatePanel(sport) {
+    const btn = document.querySelector(`.sport-tab-btn[data-sport="${sport}"]`);
+    if (!btn) return;
+    tabButtons.forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sport-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  }
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => activatePanel(btn.dataset.sport));
+  });
+
+  // Direct-link support: visuals.html?sport=basketball
+  const requestedSport = new URLSearchParams(location.search).get('sport');
+  if (requestedSport) activatePanel(requestedSport);
+
+  const ACCENT = '#c9a84c', WHITE = 'rgba(255,255,255,0.85)', MUTED = 'rgba(255,255,255,0.3)';
+  const GRID = 'rgba(255,255,255,0.06)', BLUE = '#2a78d6', GREEN = '#1d9e75', PURPLE = '#8e6fd1';
+
+  function fmt(n) { return n >= 1000000 ? '$' + (n/1000000).toFixed(1) + 'M' : '$' + (n/1000).toFixed(0) + 'K'; }
+
+  const tipBase = {
+    backgroundColor: '#132040', titleColor: WHITE, bodyColor: MUTED,
+    borderColor: ACCENT, borderWidth: 1, padding: 12
+  };
+
+  function hBar(id, labels, vals, topColor, baseColor) {
+    new Chart(document.getElementById(id), {
+      type: 'bar',
+      data: { labels, datasets: [{ data: vals, backgroundColor: vals.map((_,i)=>i===0?topColor:baseColor), borderRadius: 3 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        plugins: { legend:{display:false}, tooltip:{...tipBase, callbacks:{label:c=>' '+fmt(c.parsed.x)}} },
+        scales: {
+          x: { ticks:{color:MUTED,font:{size:10},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID} },
+          y: { ticks:{color:WHITE,font:{size:11}}, grid:{color:'transparent'}, border:{color:GRID} }
+        }
+      }
+    });
+  }
+
+  function vBar(id, labels, vals, colors) {
+    new Chart(document.getElementById(id), {
+      type: 'bar',
+      data: { labels, datasets: [{ data: vals, backgroundColor: colors, borderRadius: 3 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{display:false}, tooltip:{...tipBase, callbacks:{label:c=>' '+fmt(c.parsed.y)}} },
+        scales: {
+          x: { ticks:{color:MUTED,font:{size:10},maxRotation:25}, grid:{color:GRID}, border:{color:GRID} },
+          y: { ticks:{color:MUTED,font:{size:10},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID} }
+        }
+      }
+    });
+  }
+
+  function scatter(id, pts, dotColor) {
+    new Chart(document.getElementById(id), {
+      type: 'scatter',
+      data: { datasets: [{ data: pts, backgroundColor: dotColor+'bb', pointRadius: 5, pointHoverRadius: 8 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{display:false}, tooltip:{...tipBase,
+          callbacks:{title:i=>i[0].raw.label, label:c=>` NIL: ${fmt(c.parsed.x)} | Win%: ${c.parsed.y}%`}} },
+        scales: {
+          x: { title:{display:true,text:'NIL Estimate',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID}, min:0 },
+          y: { title:{display:true,text:'Win %',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>v+'%'}, grid:{color:GRID}, border:{color:GRID}, min:0, max:100 }
+        }
+      }
+    });
+  }
+
+  // FOOTBALL
+  hBar('fb-top10',
+    ['Texas','Miami','Notre Dame','Texas A&M','LSU','Oregon','Alabama','Tennessee','Ole Miss','Ohio State'],
+    [40000000,39500000,39000000,38900000,38000000,38000000,37200000,35700000,35200000,35000000], ACCENT, PURPLE);
+
+  vBar('fb-conf',
+    ['Independent','SEC','Big Ten','Big 12','ACC','Pac-12'],
+    [39000000,29950000,22955556,20625000,20111765,7500000],
+    ['#e8b84b',ACCENT,PURPLE,PURPLE,PURPLE,PURPLE]);
+
+  scatter('fb-scatter', [
+    {x:40000000,y:76.9,label:'Texas'},{x:39500000,y:81.2,label:'Miami'},{x:39000000,y:69.2,label:'Notre Dame'},
+    {x:38900000,y:84.6,label:'Texas A&M'},{x:38000000,y:53.8,label:'LSU'},{x:38000000,y:86.7,label:'Oregon'},
+    {x:37200000,y:73.3,label:'Alabama'},{x:35700000,y:61.5,label:'Tennessee'},{x:35200000,y:86.7,label:'Ole Miss'},
+    {x:35000000,y:85.7,label:'Ohio State'},{x:34200000,y:85.7,label:'Georgia'},{x:29000000,y:33.3,label:'Florida'},
+    {x:26000000,y:33.3,label:'South Carolina'},{x:24400000,y:64.3,label:'Duke'},{x:22000000,y:16.7,label:'Arkansas'},
+    {x:21000000,y:66.7,label:'Iowa State'},{x:20000000,y:50.0,label:'Kansas State'},{x:20000000,y:33.3,label:'North Carolina'},
+    {x:19000000,y:69.2,label:'Illinois'},{x:19000000,y:76.9,label:'Houston'},{x:18000000,y:53.8,label:'Nebraska'},
+    {x:18000000,y:61.5,label:'NC State'},{x:18000000,y:53.8,label:'California'},{x:16000000,y:41.7,label:'Rutgers'},
+    {x:15000000,y:16.7,label:'Boston College'}
+  ], PURPLE);
+
+  vBar('fb-postseason',
+    ['No Postseason','Bowl Game','CFP First Round','CFP Quarterfinal','National Champion'],
+    [20629630,21854545,36920000,33600000,21100000],
+    [MUTED, PURPLE, BLUE, GREEN, ACCENT]);
+
+  // BASKETBALL
+  hBar('bk-top10',
+    ['Kentucky','Duke','Arkansas','Tennessee','BYU','Michigan','Texas Tech','Louisville',"St. John's",'Florida'],
+    [22000000,12000000,11500000,11000000,11000000,10500000,10500000,10500000,10500000,10000000], ACCENT, BLUE);
+
+  vBar('bk-conf',
+    ['SEC','Big 12','Big Ten','ACC','Big East','AAC','Mountain West','WCC','Sun Belt','MAC','C-USA'],
+    [9093750,7906250,7861111,7138889,6863636,1753846,1216667,1145833,734615,642308,633333],
+    ['#e8b84b',BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE]);
+
+  scatter('bk-scatter', [
+    {x:22000000,y:61.1,label:'Kentucky'},{x:12000000,y:92.1,label:'Duke'},{x:11500000,y:75.7,label:'Arkansas'},
+    {x:11000000,y:67.6,label:'Tennessee'},{x:11000000,y:65.7,label:'BYU'},{x:10500000,y:92.5,label:'Michigan'},
+    {x:10500000,y:67.6,label:'Texas Tech'},{x:10500000,y:68.6,label:'Louisville'},{x:10500000,y:81.1,label:"St. John's"},
+    {x:10000000,y:77.1,label:'Florida'},{x:10000000,y:57.1,label:'Texas'},{x:9500000,y:71.4,label:'Alabama'},
+    {x:9000000,y:50.0,label:'Baylor'},{x:8500000,y:75.7,label:'Illinois'},{x:8000000,y:42.9,label:'Ole Miss'},
+    {x:8000000,y:37.5,label:'Kansas State'},{x:7500000,y:66.7,label:'Georgia'},{x:7500000,y:51.5,label:'Arizona State'},
+    {x:7000000,y:40.6,label:'South Carolina'},{x:7000000,y:81.1,label:'Houston'},{x:7000000,y:54.5,label:'Florida State'},
+    {x:6500000,y:45.5,label:'Minnesota'},{x:6500000,y:35.5,label:'Georgia Tech'},{x:6000000,y:60.6,label:'Missouri'},
+    {x:6000000,y:39.4,label:'Pitt'},{x:5500000,y:63.6,label:'California'},{x:5000000,y:58.8,label:'SMU'},
+    {x:4000000,y:50.0,label:'DePaul'},{x:2000000,y:72.7,label:'South Florida'},{x:1800000,y:33.3,label:'East Carolina'},
+    {x:1500000,y:10.7,label:'UTSA'},{x:1400000,y:61.3,label:'UAB'},{x:1200000,y:64.9,label:'Nevada'},
+    {x:1100000,y:51.5,label:'Oregon State'},{x:900000,y:69.4,label:'New Mexico'},{x:800000,y:9.4,label:'Air Force'},
+    {x:800000,y:58.1,label:'Marshall'},{x:750000,y:54.3,label:'Georgia Southern'},{x:700000,y:53.1,label:'Wyoming'},
+    {x:700000,y:34.4,label:'Old Dominion'}
+  ], BLUE);
+
+  vBar('bk-postseason',
+    ['No Postseason','NIT','NCAA Early Rounds','Sweet 16 / Elite 8','Final Four / Champion'],
+    [3330978,2606667,6519355,9083333,9375000],
+    [MUTED, BLUE, '#1d9e75', ACCENT, '#e8b84b']);
+
+  // BASEBALL
+  hBar('bb-top10',
+    ['LSU','Tennessee','Arkansas','Texas A&M','Florida','Texas','Miami','Ole Miss','Florida St.','Miss. State'],
+    [1800000,1600000,1500000,1400000,1300000,1200000,1200000,1100000,1100000,1000000], ACCENT, BLUE);
+
+  vBar('bb-conf',
+    ['SEC','ACC','Big 12','Big Ten','Indep.','AAC','Sun Belt','Mtn West','C-USA','MAC'],
+    [1062500,636250,477857,341764,380000,259000,245714,182222,147500,121666],
+    ['#e8b84b',BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE]);
+
+  scatter('bb-scatter', [
+    {x:1800000,y:51.7,label:'LSU'},{x:1600000,y:63.3,label:'Tennessee'},{x:1500000,y:65.1,label:'Arkansas'},
+    {x:1400000,y:71.9,label:'Texas A&M'},{x:1300000,y:66.1,label:'Florida'},{x:1200000,y:75.4,label:'Texas'},
+    {x:1200000,y:66.1,label:'Miami'},{x:1100000,y:64.1,label:'Ole Miss'},{x:1100000,y:67.8,label:'Fla. State'},
+    {x:1000000,y:69.4,label:'Miss. State'},{x:950000,y:62.3,label:'Vanderbilt'},{x:900000,y:79.1,label:'Georgia'},
+    {x:850000,y:67.5,label:'S. Carolina'},{x:800000,y:64.0,label:'Oklahoma'},{x:750000,y:64.5,label:'Auburn'},
+    {x:750000,y:67.3,label:'TCU'},{x:700000,y:66.7,label:'Alabama'},{x:700000,y:65.0,label:'Texas Tech'},
+    {x:600000,y:66.1,label:'Baylor'},{x:600000,y:58.0,label:'Kentucky'},{x:580000,y:63.0,label:'Arizona'},
+    {x:550000,y:52.0,label:'Missouri'},{x:500000,y:74.2,label:'Stanford'},{x:480000,y:61.0,label:'NC State'},
+    {x:420000,y:68.3,label:'E. Carolina'},{x:400000,y:70.0,label:'Louisiana'},{x:380000,y:65.0,label:'Oregon St.'},
+    {x:350000,y:66.1,label:'Tulane'},{x:320000,y:60.0,label:'G. Southern'},{x:300000,y:54.0,label:'S. Florida'},
+    {x:280000,y:63.0,label:'W. Virginia'},{x:260000,y:57.0,label:'Fresno St.'},{x:240000,y:50.0,label:'SDSU'},
+    {x:220000,y:55.0,label:'Troy'},{x:200000,y:52.0,label:'Memphis'},{x:180000,y:48.0,label:'Nevada'},
+    {x:160000,y:50.0,label:'Air Force'},{x:140000,y:49.0,label:'San Jose St.'},{x:120000,y:46.0,label:'Kent St.'},
+    {x:100000,y:43.0,label:'Ohio'},{x:90000,y:41.0,label:'Akron'}
+  ], BLUE);
+
+  vBar('bb-postseason',
+    ['No Postseason','NCAA Tourn.','Super Regional','CWS / Deep Run','Champion'],
+    [301325,588000,479285,804166,800000],
+    [MUTED, BLUE, GREEN, ACCENT, '#e8b84b']);
+
+  // VOLLEYBALL
+  hBar('vb-top10',
+    ['Nebraska','Wisconsin','Texas','Texas A&M','Penn State','Kentucky','Louisville','Stanford','Tennessee','Minnesota'],
+    [1800000,1000000,900000,850000,750000,650000,600000,550000,500000,500000], ACCENT, GREEN);
+
+  vBar('vb-conf',
+    ['Big Ten','SEC','ACC','Big 12','WCC','AAC','Mtn West','Sun Belt','MAC','C-USA'],
+    [444444,364375,267777,261428,114583,79230,77083,51285,52916,46666],
+    [ACCENT,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN]);
+
+  scatter('vb-scatter', [
+    {x:1800000,y:97.1,label:'Nebraska'},{x:1000000,y:84.8,label:'Wisconsin'},{x:900000,y:86.7,label:'Texas'},
+    {x:850000,y:87.9,label:'Texas A&M'},{x:750000,y:59.4,label:'Penn State'},{x:650000,y:91.4,label:'Kentucky'},
+    {x:600000,y:78.8,label:'Louisville'},{x:550000,y:85.3,label:'Stanford'},{x:500000,y:72.4,label:'Tennessee'},
+    {x:500000,y:70.6,label:'Minnesota'},{x:480000,y:68.5,label:'Ohio State'},{x:450000,y:69.2,label:'Florida'},
+    {x:420000,y:64.6,label:'Michigan'},{x:420000,y:72.4,label:'Kansas'},{x:400000,y:72.7,label:'Oregon'},
+    {x:400000,y:72.7,label:'Fla. State'},{x:380000,y:68.0,label:'Baylor'},{x:360000,y:67.9,label:'Iowa State'},
+    {x:350000,y:74.5,label:'Purdue'},{x:350000,y:61.5,label:'Georgia'},{x:340000,y:64.8,label:'Notre Dame'},
+    {x:320000,y:61.5,label:'Illinois'},{x:300000,y:56.4,label:'Washington'},{x:280000,y:67.0,label:'Ole Miss'},
+    {x:260000,y:62.0,label:'Auburn'},{x:240000,y:54.5,label:'Iowa'},{x:220000,y:55.0,label:'Indiana'},
+    {x:200000,y:49.0,label:'Oklahoma'},{x:180000,y:50.5,label:'Arkansas'},{x:170000,y:48.1,label:'LSU'},
+    {x:150000,y:41.0,label:'Miss. State'},{x:140000,y:45.0,label:'SMU'},{x:130000,y:38.5,label:'Vanderbilt'},
+    {x:120000,y:53.0,label:'Boise St.'},{x:110000,y:47.0,label:'SDSU'},{x:100000,y:51.0,label:'C. State'},
+    {x:90000,y:44.0,label:'Fresno St.'},{x:80000,y:41.0,label:'App. State'},{x:70000,y:39.0,label:'G. Southern'},
+    {x:65000,y:37.0,label:'Louisiana'},{x:50000,y:34.0,label:'Troy'},{x:40000,y:32.0,label:'Ark. State'}
+  ], GREEN);
+
+  vBar('vb-postseason',
+    ['No Postseason','NCAA Tourn.','Deep Run','Champion'],
+    [125969,346142,293125,850000],
+    [MUTED, GREEN, '#1d9e75', ACCENT]);
+
+</script>
+</body>
+</html>
