@@ -7,6 +7,8 @@
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="js/nil-data.js"></script>
+  <script src="js/nil-stats.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -217,7 +219,7 @@
         <span class="accent">ACTUALLY</span> <span class="outline">WIN GAMES?</span>
       </h1>
       <p class="page-sub">
-        Every NIL dollar is a bet that money buys wins. We ran the actual numbers — team NIL estimate against win percentage — for every school in the dataset with a reported figure, sport by sport. The relationship is real, but it's weaker than the arms race narrative suggests.
+        Every NIL dollar is a bet that money buys wins. We ran the actual numbers — team NIL estimate against win percentage — for every school in the dataset with an NIL figure, sport by sport. The relationship is real, but it's weaker than the arms race narrative suggests.
       </p>
     </div>
   </div>
@@ -236,16 +238,16 @@
     <div class="sport-panel active" id="panel-football">
       <div class="corr-layout">
         <div class="visual-card">
-          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-eyebrow">NIL Spend vs. Win %</div>
           <div class="visual-card-title">Football</div>
-          <div class="visual-card-subtitle">25 programs with reported NIL estimates, 2024 season.</div>
+          <div class="visual-card-subtitle" id="sub-football"></div>
           <div class="chart-wrap"><canvas id="corr-football"></canvas></div>
         </div>
         <div class="corr-panel">
-          <div class="corr-r-value">r = 0.60</div>
-          <div class="corr-r-label">Moderate-to-Strong Positive</div>
-          <div class="corr-r2">R² = 0.36 — NIL spend explains roughly 36% of the variance in win rate across these programs.</div>
-          <p class="corr-explain">Football shows the clearest relationship of the four sports outside volleyball. Texas, Miami, Texas A&amp;M, and Oregon all sit near the top of both axes. But the exceptions matter: LSU spent $38M and won just 53.8% of its games, while Arkansas' $22M budget produced a 16.7% win rate — among the worst in the sample. Money buys talent, not scheme fit or health, and both of those still decide close games.</p>
+          <div class="corr-r-value" id="r-football"></div>
+          <div class="corr-r-label" id="label-football"></div>
+          <div class="corr-r2" id="r2-football"></div>
+          <p class="corr-explain">Football shows the strongest relationship of the four sports, though it is still moderate. Texas, Miami, Ohio State, and Oregon all sit near the top of both axes. But the exceptions matter: LSU spent $42.8M and won just 53.8% of its games, Arkansas' $22M budget produced a 16.7% win rate — among the worst in the sample — and national champion Indiana went 16-0 on $21.1M, right around the median. Money buys talent, not scheme fit or health, and both of those still decide close games.</p>
         </div>
       </div>
     </div>
@@ -254,16 +256,16 @@
     <div class="sport-panel" id="panel-basketball">
       <div class="corr-layout">
         <div class="visual-card">
-          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-eyebrow">NIL Spend vs. Win %</div>
           <div class="visual-card-title">Men's Basketball</div>
-          <div class="visual-card-subtitle">40 programs with reported NIL estimates, 2024–25 season.</div>
+          <div class="visual-card-subtitle" id="sub-basketball"></div>
           <div class="chart-wrap"><canvas id="corr-basketball"></canvas></div>
         </div>
         <div class="corr-panel">
-          <div class="corr-r-value">r = 0.45</div>
-          <div class="corr-r-label">Moderate Positive</div>
-          <div class="corr-r2">R² = 0.20 — the weakest relationship of the four sports. NIL spend explains only about 20% of the variance in win rate.</div>
-          <p class="corr-explain">Kentucky's $22M collective is roughly double the next-highest budget, yet Duke and Michigan won at 92%+ clips on budgets closer to $10–12M. Basketball rosters are smaller and rotations tighter, so a well-coached team can out-execute a bigger spender far more easily than in football. Depth and matchups still carry more weight than payroll size in March.</p>
+          <div class="corr-r-value" id="r-basketball"></div>
+          <div class="corr-r-label" id="label-basketball"></div>
+          <div class="corr-r2" id="r2-basketball"></div>
+          <p class="corr-explain">Basketball shows the weakest relationship of the four sports. Kentucky's $22M collective is nearly double the next-highest budget, yet Duke and Michigan won at 92%+ clips on budgets of $10.5–12M. Basketball rosters are smaller and rotations tighter, so a well-coached team can out-execute a bigger spender far more easily than in football. Depth and matchups still carry more weight than payroll size in March.</p>
         </div>
       </div>
     </div>
@@ -272,15 +274,15 @@
     <div class="sport-panel" id="panel-baseball">
       <div class="corr-layout">
         <div class="visual-card">
-          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-eyebrow">NIL Spend vs. Win %</div>
           <div class="visual-card-title">Men's Baseball</div>
-          <div class="visual-card-subtitle">41 programs with reported NIL estimates, 2025 season.</div>
+          <div class="visual-card-subtitle" id="sub-baseball"></div>
           <div class="chart-wrap"><canvas id="corr-baseball"></canvas></div>
         </div>
         <div class="corr-panel">
-          <div class="corr-r-value">r = 0.52</div>
-          <div class="corr-r-label">Moderate Positive</div>
-          <div class="corr-r2">R² = 0.27 — NIL spend explains about 27% of the variance in win rate.</div>
+          <div class="corr-r-value" id="r-baseball"></div>
+          <div class="corr-r-label" id="label-baseball"></div>
+          <div class="corr-r2" id="r2-baseball"></div>
           <p class="corr-explain">Georgia posted a 79.1% win rate on a $900K collective, outperforming several programs spending over $1M. Baseball's NIL market is still emerging and draft eligibility complicates who collectives can even commit to long-term, which likely keeps development and coaching more decisive here than in the two revenue sports.</p>
         </div>
       </div>
@@ -290,16 +292,16 @@
     <div class="sport-panel" id="panel-volleyball">
       <div class="corr-layout">
         <div class="visual-card">
-          <div class="visual-card-eyebrow">NIL Estimate vs. Win %</div>
+          <div class="visual-card-eyebrow">NIL Spend vs. Win %</div>
           <div class="visual-card-title">Women's Volleyball</div>
-          <div class="visual-card-subtitle">42 programs with reported NIL estimates, 2024 season.</div>
+          <div class="visual-card-subtitle" id="sub-volleyball"></div>
           <div class="chart-wrap"><canvas id="corr-volleyball"></canvas></div>
         </div>
         <div class="corr-panel">
-          <div class="corr-r-value">r = 0.83</div>
-          <div class="corr-r-label">Strong Positive</div>
-          <div class="corr-r2">R² = 0.69 — the strongest relationship in the dataset. NIL spend explains roughly 69% of the variance in win rate.</div>
-          <p class="corr-explain">Nebraska's $1.8M collective and 97.1% win rate anchor the top of both axes, and the pattern holds fairly consistently down the list. Smaller rosters and lower per-athlete costs likely mean volleyball NIL dollars go further toward locking in a program's best players — making budget a much stronger predictor here than in any other sport tracked.</p>
+          <div class="corr-r-value" id="r-volleyball"></div>
+          <div class="corr-r-label" id="label-volleyball"></div>
+          <div class="corr-r2" id="r2-volleyball"></div>
+          <p class="corr-explain">Nebraska's $1.8M collective and 97.1% win rate anchor the top of both axes, but the pattern loosens further down the list: Penn State spent $750K and went 19-13, while SMU won 81.8% of its matches on $140K. Smaller rosters and lower per-athlete costs likely mean volleyball NIL dollars go further toward locking in a program's best players.</p>
         </div>
       </div>
     </div>
@@ -309,31 +311,10 @@
   <!-- COMPARISON — always visible -->
   <div class="compare-section">
     <div class="compare-title">HOW THE FOUR SPORTS STACK UP</div>
-    <p class="compare-sub">Pearson correlation coefficient (r) between team NIL estimate and win percentage, by sport. Higher means NIL spend more reliably predicts winning; lower means other factors — coaching, depth, development — are doing more of the work.</p>
-    <div class="compare-bars">
-      <div class="compare-row">
-        <div class="compare-name">Volleyball</div>
-        <div class="compare-track"><div class="compare-fill" style="width:83%;background:#1d9e75;"></div></div>
-        <div class="compare-val">0.83</div>
-      </div>
-      <div class="compare-row">
-        <div class="compare-name">Football</div>
-        <div class="compare-track"><div class="compare-fill" style="width:60%;background:#8e6fd1;"></div></div>
-        <div class="compare-val">0.60</div>
-      </div>
-      <div class="compare-row">
-        <div class="compare-name">Baseball</div>
-        <div class="compare-track"><div class="compare-fill" style="width:52%;background:#2a78d6;"></div></div>
-        <div class="compare-val">0.52</div>
-      </div>
-      <div class="compare-row">
-        <div class="compare-name">Basketball</div>
-        <div class="compare-track"><div class="compare-fill" style="width:45%;background:#2a78d6;"></div></div>
-        <div class="compare-val">0.45</div>
-      </div>
-    </div>
+    <p class="compare-sub">Pearson correlation coefficient (r) between team NIL spend and win percentage, by sport. Higher means NIL spend more reliably predicts winning; lower means other factors — coaching, depth, development — are doing more of the work.</p>
+    <div class="compare-bars" id="compareBars"></div>
     <div class="compare-note">
-      <strong>Takeaway:</strong> Across all four sports, NIL spend explains anywhere from 20% to 69% of the variance in win rate. That's a meaningful edge — but nowhere close to deterministic. Bigger budgets shift the odds toward winning more often; they don't decide any single game. Figures reflect team NIL estimates for schools with reported data. See <a href="index.html#methodology" style="color:var(--accent);">Methodology</a> for full sourcing details.
+      <strong>Takeaway:</strong> Across all four sports, NIL spend explains <span id="r2Range"></span> of the variance in win rate. That's a meaningful edge — but nowhere close to deterministic. Bigger budgets shift the odds toward winning more often; they don't decide any single game. Figures cover every school in the dataset with an NIL figure. See <a href="index.html#methodology" style="color:var(--accent);">Methodology</a> for full sourcing details.
     </div>
   </div>
 
@@ -358,75 +339,37 @@
         plugins: { legend:{display:false}, tooltip:{...tipBase,
           callbacks:{title:i=>i[0].raw.label, label:c=>` NIL: ${fmt(c.parsed.x)} | Win%: ${c.parsed.y}%`}} },
         scales: {
-          x: { title:{display:true,text:'NIL Estimate',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID}, min:0 },
+          x: { title:{display:true,text:'NIL Spend',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID}, min:0 },
           y: { title:{display:true,text:'Win %',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>v+'%'}, grid:{color:GRID}, border:{color:GRID}, min:0, max:100 }
         }
       }
     });
   }
 
-  scatter('corr-football', [
-    {x:40000000,y:76.9,label:'Texas'},{x:39500000,y:81.2,label:'Miami'},{x:39000000,y:69.2,label:'Notre Dame'},
-    {x:38900000,y:84.6,label:'Texas A&M'},{x:38000000,y:53.8,label:'LSU'},{x:38000000,y:86.7,label:'Oregon'},
-    {x:37200000,y:73.3,label:'Alabama'},{x:35700000,y:61.5,label:'Tennessee'},{x:35200000,y:86.7,label:'Ole Miss'},
-    {x:35000000,y:85.7,label:'Ohio State'},{x:34200000,y:85.7,label:'Georgia'},{x:29000000,y:33.3,label:'Florida'},
-    {x:26000000,y:33.3,label:'South Carolina'},{x:24400000,y:64.3,label:'Duke'},{x:22000000,y:16.7,label:'Arkansas'},
-    {x:21000000,y:66.7,label:'Iowa State'},{x:20000000,y:50.0,label:'Kansas State'},{x:20000000,y:33.3,label:'North Carolina'},
-    {x:19000000,y:69.2,label:'Illinois'},{x:19000000,y:76.9,label:'Houston'},{x:18000000,y:53.8,label:'Nebraska'},
-    {x:18000000,y:61.5,label:'NC State'},{x:18000000,y:53.8,label:'California'},{x:16000000,y:41.7,label:'Rutgers'},
-    {x:15000000,y:16.7,label:'Boston College'}
-  ], PURPLE);
-
-  scatter('corr-basketball', [
-    {x:22000000,y:61.1,label:'Kentucky'},{x:12000000,y:92.1,label:'Duke'},{x:11500000,y:75.7,label:'Arkansas'},
-    {x:11000000,y:67.6,label:'Tennessee'},{x:11000000,y:65.7,label:'BYU'},{x:10500000,y:92.5,label:'Michigan'},
-    {x:10500000,y:67.6,label:'Texas Tech'},{x:10500000,y:68.6,label:'Louisville'},{x:10500000,y:81.1,label:"St. John's"},
-    {x:10000000,y:77.1,label:'Florida'},{x:10000000,y:57.1,label:'Texas'},{x:9500000,y:71.4,label:'Alabama'},
-    {x:9000000,y:50.0,label:'Baylor'},{x:8500000,y:75.7,label:'Illinois'},{x:8000000,y:42.9,label:'Ole Miss'},
-    {x:8000000,y:37.5,label:'Kansas State'},{x:7500000,y:66.7,label:'Georgia'},{x:7500000,y:51.5,label:'Arizona State'},
-    {x:7000000,y:40.6,label:'South Carolina'},{x:7000000,y:81.1,label:'Houston'},{x:7000000,y:54.5,label:'Florida State'},
-    {x:6500000,y:45.5,label:'Minnesota'},{x:6500000,y:35.5,label:'Georgia Tech'},{x:6000000,y:60.6,label:'Missouri'},
-    {x:6000000,y:39.4,label:'Pitt'},{x:5500000,y:63.6,label:'California'},{x:5000000,y:58.8,label:'SMU'},
-    {x:4000000,y:50.0,label:'DePaul'},{x:2000000,y:72.7,label:'South Florida'},{x:1800000,y:33.3,label:'East Carolina'},
-    {x:1500000,y:10.7,label:'UTSA'},{x:1400000,y:61.3,label:'UAB'},{x:1200000,y:64.9,label:'Nevada'},
-    {x:1100000,y:51.5,label:'Oregon State'},{x:900000,y:69.4,label:'New Mexico'},{x:800000,y:9.4,label:'Air Force'},
-    {x:800000,y:58.1,label:'Marshall'},{x:750000,y:54.3,label:'Georgia Southern'},{x:700000,y:53.1,label:'Wyoming'},
-    {x:700000,y:34.4,label:'Old Dominion'}
-  ], BLUE);
-
-  scatter('corr-baseball', [
-    {x:1800000,y:51.7,label:'LSU'},{x:1600000,y:63.3,label:'Tennessee'},{x:1500000,y:65.1,label:'Arkansas'},
-    {x:1400000,y:71.9,label:'Texas A&M'},{x:1300000,y:66.1,label:'Florida'},{x:1200000,y:75.4,label:'Texas'},
-    {x:1200000,y:66.1,label:'Miami'},{x:1100000,y:64.1,label:'Ole Miss'},{x:1100000,y:67.8,label:'Fla. State'},
-    {x:1000000,y:69.4,label:'Miss. State'},{x:950000,y:62.3,label:'Vanderbilt'},{x:900000,y:79.1,label:'Georgia'},
-    {x:850000,y:67.5,label:'S. Carolina'},{x:800000,y:64.0,label:'Oklahoma'},{x:750000,y:64.5,label:'Auburn'},
-    {x:750000,y:67.3,label:'TCU'},{x:700000,y:66.7,label:'Alabama'},{x:700000,y:65.0,label:'Texas Tech'},
-    {x:600000,y:66.1,label:'Baylor'},{x:600000,y:58.0,label:'Kentucky'},{x:580000,y:63.0,label:'Arizona'},
-    {x:550000,y:52.0,label:'Missouri'},{x:500000,y:74.2,label:'Stanford'},{x:480000,y:61.0,label:'NC State'},
-    {x:420000,y:68.3,label:'E. Carolina'},{x:400000,y:70.0,label:'Louisiana'},{x:380000,y:65.0,label:'Oregon St.'},
-    {x:350000,y:66.1,label:'Tulane'},{x:320000,y:60.0,label:'G. Southern'},{x:300000,y:54.0,label:'S. Florida'},
-    {x:280000,y:63.0,label:'W. Virginia'},{x:260000,y:57.0,label:'Fresno St.'},{x:240000,y:50.0,label:'SDSU'},
-    {x:220000,y:55.0,label:'Troy'},{x:200000,y:52.0,label:'Memphis'},{x:180000,y:48.0,label:'Nevada'},
-    {x:160000,y:50.0,label:'Air Force'},{x:140000,y:49.0,label:'San Jose St.'},{x:120000,y:46.0,label:'Kent St.'},
-    {x:100000,y:43.0,label:'Ohio'},{x:90000,y:41.0,label:'Akron'}
-  ], BLUE);
-
-  scatter('corr-volleyball', [
-    {x:1800000,y:97.1,label:'Nebraska'},{x:1000000,y:84.8,label:'Wisconsin'},{x:900000,y:86.7,label:'Texas'},
-    {x:850000,y:87.9,label:'Texas A&M'},{x:750000,y:59.4,label:'Penn State'},{x:650000,y:91.4,label:'Kentucky'},
-    {x:600000,y:78.8,label:'Louisville'},{x:550000,y:85.3,label:'Stanford'},{x:500000,y:72.4,label:'Tennessee'},
-    {x:500000,y:70.6,label:'Minnesota'},{x:480000,y:68.5,label:'Ohio State'},{x:450000,y:69.2,label:'Florida'},
-    {x:420000,y:64.6,label:'Michigan'},{x:420000,y:72.4,label:'Kansas'},{x:400000,y:72.7,label:'Oregon'},
-    {x:400000,y:72.7,label:'Fla. State'},{x:380000,y:68.0,label:'Baylor'},{x:360000,y:67.9,label:'Iowa State'},
-    {x:350000,y:74.5,label:'Purdue'},{x:350000,y:61.5,label:'Georgia'},{x:340000,y:64.8,label:'Notre Dame'},
-    {x:320000,y:61.5,label:'Illinois'},{x:300000,y:56.4,label:'Washington'},{x:280000,y:67.0,label:'Ole Miss'},
-    {x:260000,y:62.0,label:'Auburn'},{x:240000,y:54.5,label:'Iowa'},{x:220000,y:55.0,label:'Indiana'},
-    {x:200000,y:49.0,label:'Oklahoma'},{x:180000,y:50.5,label:'Arkansas'},{x:170000,y:48.1,label:'LSU'},
-    {x:150000,y:41.0,label:'Miss. State'},{x:140000,y:45.0,label:'SMU'},{x:130000,y:38.5,label:'Vanderbilt'},
-    {x:120000,y:53.0,label:'Boise St.'},{x:110000,y:47.0,label:'SDSU'},{x:100000,y:51.0,label:'C. State'},
-    {x:90000,y:44.0,label:'Fresno St.'},{x:80000,y:41.0,label:'App. State'},{x:70000,y:39.0,label:'G. Southern'},
-    {x:65000,y:37.0,label:'Louisiana'},{x:50000,y:34.0,label:'Troy'},{x:40000,y:32.0,label:'Ark. State'}
-  ], GREEN);
+  // Points, r values and the comparison chart are all calculated from js/nil-data.js.
+  const CORR_COLORS = { football: PURPLE, basketball: BLUE, baseball: BLUE, volleyball: GREEN };
+  const NAMES = { football: 'Football', basketball: 'Basketball', baseball: 'Baseball', volleyball: 'Volleyball' };
+  const stats = {};
+  Object.keys(CORR_COLORS).forEach(sport => {
+    scatter('corr-' + sport, NIL.points(sport), CORR_COLORS[sport]);
+    const { r, n } = NIL.pearson(sport);
+    stats[sport] = r;
+    const r2 = r * r;
+    document.getElementById('r-' + sport).textContent = 'r = ' + r.toFixed(2);
+    document.getElementById('label-' + sport).textContent = NIL.strength(r);
+    document.getElementById('r2-' + sport).textContent =
+      `R² = ${r2.toFixed(2)} — NIL spend explains about ${Math.round(r2 * 100)}% of the variance in win rate across these programs.`;
+    document.getElementById('sub-' + sport).textContent = `${n} programs with NIL figures, ${NIL.SEASONS[sport]} season.`;
+  });
+  const order = Object.keys(stats).sort((a, b) => stats[b] - stats[a]);
+  document.getElementById('compareBars').innerHTML = order.map(sport => `
+      <div class="compare-row">
+        <div class="compare-name">${NAMES[sport]}</div>
+        <div class="compare-track"><div class="compare-fill" style="width:${Math.round(stats[sport] * 100)}%;background:${CORR_COLORS[sport]};"></div></div>
+        <div class="compare-val">${stats[sport].toFixed(2)}</div>
+      </div>`).join('');
+  const r2s = order.map(s => Math.round(stats[s] ** 2 * 100));
+  document.getElementById('r2Range').textContent = `about ${Math.min(...r2s)}% to ${Math.max(...r2s)}%`;
 
   const tabButtons = document.querySelectorAll('.sport-tab-btn');
   function activatePanel(sport) {
