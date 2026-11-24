@@ -7,6 +7,8 @@
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="js/nil-data.js"></script>
+  <script src="js/nil-stats.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -220,9 +222,9 @@
       </p>
       <div class="page-meta">
         <div class="page-meta-item"><span>4</span> Sports Analyzed</div>
-        <div class="page-meta-item"><span>270+</span> Programs</div>
+        <div class="page-meta-item"><span>159</span> Schools</div>
         <div class="page-meta-item"><span>4</span> Chart Types</div>
-        <div class="page-meta-item"><span>Est.</span> NIL Figures</div>
+        <div class="page-meta-item"><span>13</span> Conferences</div>
       </div>
     </div>
   </div>
@@ -244,48 +246,48 @@
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 01</div>
           <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
-          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="visual-card-subtitle">Total NIL collective investment by program, 2025 season</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="fb-top10"></canvas></div>
-          <div class="visual-insight"><strong>Texas leads at $40M</strong> — the highest figure of any tracked program in any sport. But LSU ($38M) won just 53.8% of its games, while Oregon spent the same and won 86.7% — spend gets you talent, not automatic wins.</div>
+          <div class="visual-insight"><strong>Texas leads at $47.9M</strong> — the highest figure of any tracked program in any sport. But LSU ($42.8M) won just 53.8% of its games, while Oregon spent the same and won 86.7% — spend gets you talent, not automatic wins.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 02</div>
           <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
-          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="visual-card-subtitle">Mean NIL spend per program by conference</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="fb-conf"></canvas></div>
-          <div class="visual-insight">The <strong>SEC averages $29.95M per program</strong> — nearly 4x the depleted Pac-12's $7.5M. Conference realignment has concentrated football NIL money into a handful of leagues.</div>
+          <div class="visual-insight">The <strong>SEC averages $30.7M per program</strong> — about 4x the depleted Pac-12's $7.5M. Conference realignment has concentrated football NIL money into a handful of leagues. Football budgets are tracked for the 69 Power-conference programs.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 03</div>
           <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
           <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="fb-scatter"></canvas></div>
-          <div class="visual-insight"><strong>Mixed correlation.</strong> Arkansas spent $22M and won just 16.7% of games, while several mid-tier spenders like Ole Miss ($35.2M) posted elite win rates. Roster turnover in the portal era adds noise year to year.</div>
+          <div class="visual-insight"><strong>Moderate correlation (r = 0.46).</strong> Arkansas spent $22M and won just 16.7% of games, while Ole Miss ($35.2M) went 13-2 and reached the CFP semifinals. Roster turnover in the portal era adds noise year to year.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 04</div>
           <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
           <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="fb-postseason"></canvas></div>
-          <div class="visual-insight">CFP First Round teams averaged <strong>$36.9M in NIL</strong> vs. $20.6M for non-postseason programs — a 1.8x gap. The single national champion in this sample spent closer to the league median, a reminder that one data point can be an outlier.</div>
+          <div class="visual-insight">CFP teams averaged <strong>$36.6M in NIL</strong> vs. $19.9M for programs that missed the postseason — a 1.8x gap. National champion Indiana spent $21.1M, close to the $20M median, a reminder that one data point can be an outlier.</div>
         </div>
       </div>
 
       <div class="findings-strip">
         <div class="finding-item">
-          <div class="finding-num">$40M</div>
+          <div class="finding-num">$47.9M</div>
           <div class="finding-label">Texas — Top Football NIL Spend</div>
-          <div class="finding-desc">The highest figure of any tracked program in any sport — yet five of the top ten spenders won fewer than 75% of their games.</div>
+          <div class="finding-desc">The highest figure of any tracked program in any sport — yet three of the top ten spenders (LSU, Tennessee, Alabama) won fewer than 75% of their games.</div>
         </div>
         <div class="finding-item">
           <div class="finding-num">4x</div>
           <div class="finding-label">SEC vs. Pac-12 Spending Gap</div>
-          <div class="finding-desc">The SEC's $29.95M conference average dwarfs the depleted Pac-12's $7.5M in the realignment era.</div>
+          <div class="finding-desc">The SEC's $30.7M conference average dwarfs the depleted Pac-12's $7.5M in the realignment era.</div>
         </div>
         <div class="finding-item">
           <div class="finding-num">1.8x</div>
-          <div class="finding-label">CFP First Round vs. No Postseason</div>
-          <div class="finding-desc">Programs that reached the CFP averaged $36.9M in NIL spend vs. $20.6M for programs that missed the postseason entirely.</div>
+          <div class="finding-label">CFP Teams vs. No Postseason</div>
+          <div class="finding-desc">Programs that reached the CFP averaged $36.6M in NIL spend vs. $19.9M for programs that missed the postseason entirely.</div>
         </div>
       </div>
     </div>
@@ -296,30 +298,30 @@
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 01</div>
           <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
-          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="visual-card-subtitle">Total NIL collective investment by program, 2025–26 season</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bk-top10"></canvas></div>
           <div class="visual-insight"><strong>Kentucky leads at $22M</strong> — nearly double Duke's $12M at #2 — yet Kentucky's 61.1% win rate trailed several lower-spending blue bloods like Michigan (92.5%).</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 02</div>
           <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
-          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="visual-card-subtitle">Mean NIL spend per program by conference</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bk-conf"></canvas></div>
-          <div class="visual-insight">The <strong>SEC averages $9.09M per program</strong> — more than 14x C-USA's $633K. It's the widest conference NIL gap of any tracked sport.</div>
+          <div class="visual-insight">The <strong>SEC averages $9.09M per program</strong> — more than 14x C-USA's $636K. It's the widest conference NIL gap of any tracked sport.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 03</div>
           <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
           <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bk-scatter"></canvas></div>
-          <div class="visual-insight"><strong>Moderate correlation.</strong> Duke and Michigan both crack the top 10 in spend and win 90%+ of games, but Kentucky's outsized budget didn't buy an elite win rate — depth of roster matters as much as top-line spend.</div>
+          <div class="visual-insight"><strong>Moderate correlation (r = 0.35).</strong> Duke and Michigan both crack the top 10 in spend and win 92%+ of games, but Kentucky's outsized budget didn't buy an elite win rate — depth of roster matters as much as top-line spend.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 04</div>
           <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
           <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bk-postseason"></canvas></div>
-          <div class="visual-insight">Final Four / Champion teams averaged <strong>$9.38M in NIL</strong> vs. $3.33M for non-postseason programs — nearly a 3x gap, with a steady step-up at every round of the bracket.</div>
+          <div class="visual-insight">Final Four and title-game teams averaged <strong>$9.38M in NIL</strong> vs. $3.01M for programs with no postseason — about a 3x gap, with a steady step-up at every round of the bracket.</div>
         </div>
       </div>
 
@@ -332,12 +334,12 @@
         <div class="finding-item">
           <div class="finding-num">14x</div>
           <div class="finding-label">SEC vs. C-USA Spending Gap</div>
-          <div class="finding-desc">The SEC averages $9.09M per program compared to just $633K in C-USA — the widest conference gap in the index.</div>
+          <div class="finding-desc">The SEC averages $9.09M per program compared to just $636K in C-USA — the widest conference gap in the index.</div>
         </div>
         <div class="finding-item">
-          <div class="finding-num">2.8x</div>
-          <div class="finding-label">Final Four/Champion vs. No Postseason</div>
-          <div class="finding-desc">Programs that reached the Final Four or won the title averaged $9.38M in NIL — nearly 3x the average for non-postseason teams.</div>
+          <div class="finding-num">3.1x</div>
+          <div class="finding-label">Final Four vs. No Postseason</div>
+          <div class="finding-desc">Programs that reached the Final Four averaged $9.38M in NIL — about 3x the $3.01M average for teams with no postseason.</div>
         </div>
       </div>
     </div>
@@ -348,30 +350,30 @@
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 01</div>
           <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
-          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="visual-card-subtitle">Total NIL collective investment by program, 2026 season</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bb-top10"></canvas></div>
-          <div class="visual-insight">The SEC owns every spot in the top 8. <strong>LSU leads at $1.8M</strong> despite finishing 30-28 — the most glaring example that baseball NIL investment doesn't guarantee wins the way it does in other sports.</div>
+          <div class="visual-insight">The SEC holds 8 of the top 10 spots (Miami and Florida State are the exceptions). <strong>LSU leads at $1.8M</strong> despite finishing 30-28 — the most glaring example that baseball NIL investment doesn't guarantee wins the way it does in other sports.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 02</div>
           <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
-          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="visual-card-subtitle">Mean NIL spend per program by conference</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bb-conf"></canvas></div>
-          <div class="visual-insight">The <strong>SEC averages $1.06M per program</strong> — nearly double the ACC at $636K and more than 4x the Big Ten at $342K. Conference affiliation is the single biggest predictor of how much a baseball program can spend.</div>
+          <div class="visual-insight">The <strong>SEC averages $1.06M per program</strong> — about 1.7x the ACC at $636K and about 3x the Big Ten at $342K. Conference affiliation shapes how much a baseball program can spend.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 03</div>
           <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
           <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bb-scatter"></canvas></div>
-          <div class="visual-insight"><strong>Weak correlation in baseball.</strong> LSU spent the most and had a .517 win rate. Georgia spent $900K and won 79% of games. The MLB draft complicates retention — players who get drafted leave, regardless of NIL deals.</div>
+          <div class="visual-insight"><strong>Moderate correlation in baseball (r = 0.40).</strong> LSU spent the most and had a .517 win rate. Georgia spent $900K and won 79% of games. The MLB draft complicates retention — players who get drafted leave, regardless of NIL deals.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 04</div>
           <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
           <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="bb-postseason"></canvas></div>
-          <div class="visual-insight">CWS teams averaged <strong>$804K in NIL</strong> vs. $301K for programs that missed the postseason entirely — a 2.7x gap. The relationship exists, but individual outliers like LSU show spending alone doesn't get you there.</div>
+          <div class="visual-insight">College World Series teams averaged <strong>$757K in NIL</strong> vs. $295K for programs that missed the postseason entirely — a 2.6x gap. The relationship exists, but individual outliers like LSU show spending alone doesn't get you there.</div>
         </div>
       </div>
 
@@ -379,12 +381,12 @@
         <div class="finding-item">
           <div class="finding-num">$1.06M</div>
           <div class="finding-label">SEC Average NIL per Program</div>
-          <div class="finding-desc">The highest conference average in college baseball — nearly double the next-closest ACC at $636K.</div>
+          <div class="finding-desc">The highest conference average in college baseball — about 1.7x the next-closest ACC at $636K.</div>
         </div>
         <div class="finding-item">
-          <div class="finding-num">2.7x</div>
+          <div class="finding-num">2.6x</div>
           <div class="finding-label">CWS Teams vs. No Postseason</div>
-          <div class="finding-desc">Programs that reached the College World Series spent on average 2.7x more than those that missed the postseason.</div>
+          <div class="finding-desc">Programs that reached the College World Series spent on average 2.6x more than those that missed the postseason.</div>
         </div>
         <div class="finding-item">
           <div class="finding-num">$265K</div>
@@ -400,14 +402,14 @@
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 01</div>
           <div class="visual-card-title">TOP 10 NIL SPENDERS</div>
-          <div class="visual-card-subtitle">Estimated total NIL collective investment by program, 2025 season</div>
+          <div class="visual-card-subtitle">Total NIL collective investment by program, 2025 season</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="vb-top10"></canvas></div>
-          <div class="visual-insight"><strong>Nebraska leads at $1.8M</strong> and went 33-1 — one of the clearest spend-to-performance correlations in all of college sports. Eight of the top 10 spenders won more than 78% of their matches.</div>
+          <div class="visual-insight"><strong>Nebraska leads at $1.8M</strong> and went 33-1. Seven of the top 10 spenders won more than 78% of their matches.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 02</div>
           <div class="visual-card-title">CONFERENCE NIL AVERAGES</div>
-          <div class="visual-card-subtitle">Mean estimated NIL spend per program by conference</div>
+          <div class="visual-card-subtitle">Mean NIL spend per program by conference</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="vb-conf"></canvas></div>
           <div class="visual-insight">The <strong>Big Ten averages $444K</strong> per program — driven by Nebraska and Wisconsin. The SEC trails at $364K despite Texas A&M winning the national title, reflecting how one dominant spender can skew conference averages.</div>
         </div>
@@ -416,14 +418,14 @@
           <div class="visual-card-title">NIL SPEND vs. WIN PERCENTAGE</div>
           <div class="visual-card-subtitle">Each dot represents one program — hover for details</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="vb-scatter"></canvas></div>
-          <div class="visual-insight"><strong>Strong correlation in volleyball.</strong> The top 6 spenders all won 78%+ of their matches. Unlike baseball, volleyball programs can retain players through their full eligibility — NIL investment compounds over time.</div>
+          <div class="visual-insight"><strong>Moderate correlation in volleyball (r = 0.44).</strong> Seven of the top 8 spenders won 78%+ of their matches; Penn State (19-13) was the exception. Volleyball programs can retain players through their full eligibility, so NIL investment can compound over time.</div>
         </div>
         <div class="visual-card">
           <div class="visual-card-eyebrow">Visual 04</div>
           <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
           <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="vb-postseason"></canvas></div>
-          <div class="visual-insight">The national <strong>champion averaged $850K</strong> vs. $126K for non-postseason programs — a <strong>6.7x gap</strong>. The strongest postseason-NIL correlation of any tracked sport in this index.</div>
+          <div class="visual-insight">The national <strong>champion averaged $850K</strong> vs. $126K for non-postseason programs — a <strong>6.7x gap</strong>. The largest champion-to-no-postseason gap of any tracked sport in this index.</div>
         </div>
       </div>
 
@@ -431,12 +433,12 @@
         <div class="finding-item">
           <div class="finding-num">6.7x</div>
           <div class="finding-label">Champion vs. No Postseason NIL Gap</div>
-          <div class="finding-desc">The national champion spent 6.7x more than the average non-postseason program — the sharpest correlation in any tracked sport.</div>
+          <div class="finding-desc">The national champion spent 6.7x more than the average non-postseason program — the largest such gap in any tracked sport.</div>
         </div>
         <div class="finding-item">
           <div class="finding-num">97.1%</div>
           <div class="finding-label">Nebraska Win Rate</div>
-          <div class="finding-desc">The top NIL spender in volleyball went 33-1 — the highest win percentage among all tracked programs in any sport.</div>
+          <div class="finding-desc">The top NIL spender in volleyball went 33-1 — the best record among the top spenders in any tracked sport.</div>
         </div>
         <div class="finding-item">
           <div class="finding-num">$444K</div>
@@ -522,135 +524,25 @@
         plugins: { legend:{display:false}, tooltip:{...tipBase,
           callbacks:{title:i=>i[0].raw.label, label:c=>` NIL: ${fmt(c.parsed.x)} | Win%: ${c.parsed.y}%`}} },
         scales: {
-          x: { title:{display:true,text:'NIL Estimate',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID}, min:0 },
+          x: { title:{display:true,text:'NIL Spend',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>fmt(v)}, grid:{color:GRID}, border:{color:GRID}, min:0 },
           y: { title:{display:true,text:'Win %',color:MUTED,font:{size:9}}, ticks:{color:MUTED,font:{size:9},callback:v=>v+'%'}, grid:{color:GRID}, border:{color:GRID}, min:0, max:100 }
         }
       }
     });
   }
 
-  // FOOTBALL
-  hBar('fb-top10',
-    ['Texas','Miami','Notre Dame','Texas A&M','LSU','Oregon','Alabama','Tennessee','Ole Miss','Ohio State'],
-    [40000000,39500000,39000000,38900000,38000000,38000000,37200000,35700000,35200000,35000000], ACCENT, PURPLE);
-
-  vBar('fb-conf',
-    ['Independent','SEC','Big Ten','Big 12','ACC','Pac-12'],
-    [39000000,29950000,22955556,20625000,20111765,7500000],
-    ['#e8b84b',ACCENT,PURPLE,PURPLE,PURPLE,PURPLE]);
-
-  scatter('fb-scatter', [
-    {x:40000000,y:76.9,label:'Texas'},{x:39500000,y:81.2,label:'Miami'},{x:39000000,y:69.2,label:'Notre Dame'},
-    {x:38900000,y:84.6,label:'Texas A&M'},{x:38000000,y:53.8,label:'LSU'},{x:38000000,y:86.7,label:'Oregon'},
-    {x:37200000,y:73.3,label:'Alabama'},{x:35700000,y:61.5,label:'Tennessee'},{x:35200000,y:86.7,label:'Ole Miss'},
-    {x:35000000,y:85.7,label:'Ohio State'},{x:34200000,y:85.7,label:'Georgia'},{x:29000000,y:33.3,label:'Florida'},
-    {x:26000000,y:33.3,label:'South Carolina'},{x:24400000,y:64.3,label:'Duke'},{x:22000000,y:16.7,label:'Arkansas'},
-    {x:21000000,y:66.7,label:'Iowa State'},{x:20000000,y:50.0,label:'Kansas State'},{x:20000000,y:33.3,label:'North Carolina'},
-    {x:19000000,y:69.2,label:'Illinois'},{x:19000000,y:76.9,label:'Houston'},{x:18000000,y:53.8,label:'Nebraska'},
-    {x:18000000,y:61.5,label:'NC State'},{x:18000000,y:53.8,label:'California'},{x:16000000,y:41.7,label:'Rutgers'},
-    {x:15000000,y:16.7,label:'Boston College'}
-  ], PURPLE);
-
-  vBar('fb-postseason',
-    ['No Postseason','Bowl Game','CFP First Round','CFP Quarterfinal','National Champion'],
-    [20629630,21854545,36920000,33600000,21100000],
-    [MUTED, PURPLE, BLUE, GREEN, ACCENT]);
-
-  // BASKETBALL
-  hBar('bk-top10',
-    ['Kentucky','Duke','Arkansas','Tennessee','BYU','Michigan','Texas Tech','Louisville',"St. John's",'Florida'],
-    [22000000,12000000,11500000,11000000,11000000,10500000,10500000,10500000,10500000,10000000], ACCENT, BLUE);
-
-  vBar('bk-conf',
-    ['SEC','Big 12','Big Ten','ACC','Big East','AAC','Mountain West','WCC','Sun Belt','MAC','C-USA'],
-    [9093750,7906250,7861111,7138889,6863636,1753846,1216667,1145833,734615,642308,633333],
-    ['#e8b84b',BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE]);
-
-  scatter('bk-scatter', [
-    {x:22000000,y:61.1,label:'Kentucky'},{x:12000000,y:92.1,label:'Duke'},{x:11500000,y:75.7,label:'Arkansas'},
-    {x:11000000,y:67.6,label:'Tennessee'},{x:11000000,y:65.7,label:'BYU'},{x:10500000,y:92.5,label:'Michigan'},
-    {x:10500000,y:67.6,label:'Texas Tech'},{x:10500000,y:68.6,label:'Louisville'},{x:10500000,y:81.1,label:"St. John's"},
-    {x:10000000,y:77.1,label:'Florida'},{x:10000000,y:57.1,label:'Texas'},{x:9500000,y:71.4,label:'Alabama'},
-    {x:9000000,y:50.0,label:'Baylor'},{x:8500000,y:75.7,label:'Illinois'},{x:8000000,y:42.9,label:'Ole Miss'},
-    {x:8000000,y:37.5,label:'Kansas State'},{x:7500000,y:66.7,label:'Georgia'},{x:7500000,y:51.5,label:'Arizona State'},
-    {x:7000000,y:40.6,label:'South Carolina'},{x:7000000,y:81.1,label:'Houston'},{x:7000000,y:54.5,label:'Florida State'},
-    {x:6500000,y:45.5,label:'Minnesota'},{x:6500000,y:35.5,label:'Georgia Tech'},{x:6000000,y:60.6,label:'Missouri'},
-    {x:6000000,y:39.4,label:'Pitt'},{x:5500000,y:63.6,label:'California'},{x:5000000,y:58.8,label:'SMU'},
-    {x:4000000,y:50.0,label:'DePaul'},{x:2000000,y:72.7,label:'South Florida'},{x:1800000,y:33.3,label:'East Carolina'},
-    {x:1500000,y:10.7,label:'UTSA'},{x:1400000,y:61.3,label:'UAB'},{x:1200000,y:64.9,label:'Nevada'},
-    {x:1100000,y:51.5,label:'Oregon State'},{x:900000,y:69.4,label:'New Mexico'},{x:800000,y:9.4,label:'Air Force'},
-    {x:800000,y:58.1,label:'Marshall'},{x:750000,y:54.3,label:'Georgia Southern'},{x:700000,y:53.1,label:'Wyoming'},
-    {x:700000,y:34.4,label:'Old Dominion'}
-  ], BLUE);
-
-  vBar('bk-postseason',
-    ['No Postseason','NIT','NCAA Early Rounds','Sweet 16 / Elite 8','Final Four / Champion'],
-    [3330978,2606667,6519355,9083333,9375000],
-    [MUTED, BLUE, '#1d9e75', ACCENT, '#e8b84b']);
-
-  // BASEBALL
-  hBar('bb-top10',
-    ['LSU','Tennessee','Arkansas','Texas A&M','Florida','Texas','Miami','Ole Miss','Florida St.','Miss. State'],
-    [1800000,1600000,1500000,1400000,1300000,1200000,1200000,1100000,1100000,1000000], ACCENT, BLUE);
-
-  vBar('bb-conf',
-    ['SEC','ACC','Big 12','Big Ten','Indep.','AAC','Sun Belt','Mtn West','C-USA','MAC'],
-    [1062500,636250,477857,341764,380000,259000,245714,182222,147500,121666],
-    ['#e8b84b',BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE]);
-
-  scatter('bb-scatter', [
-    {x:1800000,y:51.7,label:'LSU'},{x:1600000,y:63.3,label:'Tennessee'},{x:1500000,y:65.1,label:'Arkansas'},
-    {x:1400000,y:71.9,label:'Texas A&M'},{x:1300000,y:66.1,label:'Florida'},{x:1200000,y:75.4,label:'Texas'},
-    {x:1200000,y:66.1,label:'Miami'},{x:1100000,y:64.1,label:'Ole Miss'},{x:1100000,y:67.8,label:'Fla. State'},
-    {x:1000000,y:69.4,label:'Miss. State'},{x:950000,y:62.3,label:'Vanderbilt'},{x:900000,y:79.1,label:'Georgia'},
-    {x:850000,y:67.5,label:'S. Carolina'},{x:800000,y:64.0,label:'Oklahoma'},{x:750000,y:64.5,label:'Auburn'},
-    {x:750000,y:67.3,label:'TCU'},{x:700000,y:66.7,label:'Alabama'},{x:700000,y:65.0,label:'Texas Tech'},
-    {x:600000,y:66.1,label:'Baylor'},{x:600000,y:58.0,label:'Kentucky'},{x:580000,y:63.0,label:'Arizona'},
-    {x:550000,y:52.0,label:'Missouri'},{x:500000,y:74.2,label:'Stanford'},{x:480000,y:61.0,label:'NC State'},
-    {x:420000,y:68.3,label:'E. Carolina'},{x:400000,y:70.0,label:'Louisiana'},{x:380000,y:65.0,label:'Oregon St.'},
-    {x:350000,y:66.1,label:'Tulane'},{x:320000,y:60.0,label:'G. Southern'},{x:300000,y:54.0,label:'S. Florida'},
-    {x:280000,y:63.0,label:'W. Virginia'},{x:260000,y:57.0,label:'Fresno St.'},{x:240000,y:50.0,label:'SDSU'},
-    {x:220000,y:55.0,label:'Troy'},{x:200000,y:52.0,label:'Memphis'},{x:180000,y:48.0,label:'Nevada'},
-    {x:160000,y:50.0,label:'Air Force'},{x:140000,y:49.0,label:'San Jose St.'},{x:120000,y:46.0,label:'Kent St.'},
-    {x:100000,y:43.0,label:'Ohio'},{x:90000,y:41.0,label:'Akron'}
-  ], BLUE);
-
-  vBar('bb-postseason',
-    ['No Postseason','NCAA Tourn.','Super Regional','CWS / Deep Run','Champion'],
-    [301325,588000,479285,804166,800000],
-    [MUTED, BLUE, GREEN, ACCENT, '#e8b84b']);
-
-  // VOLLEYBALL
-  hBar('vb-top10',
-    ['Nebraska','Wisconsin','Texas','Texas A&M','Penn State','Kentucky','Louisville','Stanford','Tennessee','Minnesota'],
-    [1800000,1000000,900000,850000,750000,650000,600000,550000,500000,500000], ACCENT, GREEN);
-
-  vBar('vb-conf',
-    ['Big Ten','SEC','ACC','Big 12','WCC','AAC','Mtn West','Sun Belt','MAC','C-USA'],
-    [444444,364375,267777,261428,114583,79230,77083,51285,52916,46666],
-    [ACCENT,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN,GREEN]);
-
-  scatter('vb-scatter', [
-    {x:1800000,y:97.1,label:'Nebraska'},{x:1000000,y:84.8,label:'Wisconsin'},{x:900000,y:86.7,label:'Texas'},
-    {x:850000,y:87.9,label:'Texas A&M'},{x:750000,y:59.4,label:'Penn State'},{x:650000,y:91.4,label:'Kentucky'},
-    {x:600000,y:78.8,label:'Louisville'},{x:550000,y:85.3,label:'Stanford'},{x:500000,y:72.4,label:'Tennessee'},
-    {x:500000,y:70.6,label:'Minnesota'},{x:480000,y:68.5,label:'Ohio State'},{x:450000,y:69.2,label:'Florida'},
-    {x:420000,y:64.6,label:'Michigan'},{x:420000,y:72.4,label:'Kansas'},{x:400000,y:72.7,label:'Oregon'},
-    {x:400000,y:72.7,label:'Fla. State'},{x:380000,y:68.0,label:'Baylor'},{x:360000,y:67.9,label:'Iowa State'},
-    {x:350000,y:74.5,label:'Purdue'},{x:350000,y:61.5,label:'Georgia'},{x:340000,y:64.8,label:'Notre Dame'},
-    {x:320000,y:61.5,label:'Illinois'},{x:300000,y:56.4,label:'Washington'},{x:280000,y:67.0,label:'Ole Miss'},
-    {x:260000,y:62.0,label:'Auburn'},{x:240000,y:54.5,label:'Iowa'},{x:220000,y:55.0,label:'Indiana'},
-    {x:200000,y:49.0,label:'Oklahoma'},{x:180000,y:50.5,label:'Arkansas'},{x:170000,y:48.1,label:'LSU'},
-    {x:150000,y:41.0,label:'Miss. State'},{x:140000,y:45.0,label:'SMU'},{x:130000,y:38.5,label:'Vanderbilt'},
-    {x:120000,y:53.0,label:'Boise St.'},{x:110000,y:47.0,label:'SDSU'},{x:100000,y:51.0,label:'C. State'},
-    {x:90000,y:44.0,label:'Fresno St.'},{x:80000,y:41.0,label:'App. State'},{x:70000,y:39.0,label:'G. Southern'},
-    {x:65000,y:37.0,label:'Louisiana'},{x:50000,y:34.0,label:'Troy'},{x:40000,y:32.0,label:'Ark. State'}
-  ], GREEN);
-
-  vBar('vb-postseason',
-    ['No Postseason','NCAA Tourn.','Deep Run','Champion'],
-    [125969,346142,293125,850000],
-    [MUTED, GREEN, '#1d9e75', ACCENT]);
+  // All chart data is calculated from js/nil-data.js (see js/nil-stats.js).
+  const SPORT_COLORS = { fb: ['football', PURPLE], bk: ['basketball', BLUE], bb: ['baseball', BLUE], vb: ['volleyball', GREEN] };
+  Object.entries(SPORT_COLORS).forEach(([p, [sport, color]]) => {
+    const top = NIL.top10(sport);
+    hBar(p + '-top10', top.labels, top.vals, ACCENT, color);
+    const conf = NIL.confAvg(sport);
+    vBar(p + '-conf', conf.labels, conf.vals, conf.vals.map((_, i) => i === 0 ? '#e8b84b' : color));
+    scatter(p + '-scatter', NIL.points(sport), color);
+    const ps = NIL.postseason(sport);
+    const steps = [color, '#1d9e75', ACCENT, '#e8b84b', '#e8b84b'];
+    vBar(p + '-postseason', ps.labels, ps.vals, ps.labels.map((_, i) => i === 0 ? MUTED : steps[Math.min(i - 1, steps.length - 1)]));
+  });
 
 </script>
 </body>
