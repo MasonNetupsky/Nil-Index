@@ -156,6 +156,7 @@
       background: var(--navy); border: 1px solid var(--border-dark);
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
     }
+    .findings-strip.two { grid-template-columns: repeat(2, 1fr); }
     .finding-item { }
     .finding-num {
       font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
@@ -185,7 +186,7 @@
     @media (max-width: 960px) {
       nav, .page-hero, .visuals-main, .sport-tab-bar, .page-footer { padding-left: 24px; padding-right: 24px; }
       .visuals-grid { grid-template-columns: 1fr; }
-      .findings-strip { grid-template-columns: 1fr; }
+      .findings-strip, .findings-strip.two { grid-template-columns: 1fr; }
       .nav-right { gap: 16px; }
     }
   </style>
@@ -377,7 +378,7 @@
         </div>
       </div>
 
-      <div class="findings-strip">
+      <div class="findings-strip two">
         <div class="finding-item">
           <div class="finding-num">$1.06M</div>
           <div class="finding-label">SEC Average NIL per Program</div>
@@ -387,11 +388,6 @@
           <div class="finding-num">2.6x</div>
           <div class="finding-label">CWS Teams vs. No Postseason</div>
           <div class="finding-desc">Programs that reached the College World Series spent on average 2.6x more than those that missed the postseason.</div>
-        </div>
-        <div class="finding-item">
-          <div class="finding-num">$265K</div>
-          <div class="finding-label">Average FBS Baseball NIL Allocation</div>
-          <div class="finding-desc">Across 79 public FBS schools, baseball receives ~2.8% of total revenue sharing — averaging $265,593 per team.</div>
         </div>
       </div>
     </div>
@@ -425,15 +421,15 @@
           <div class="visual-card-title">POSTSEASON DEPTH vs. NIL SPEND</div>
           <div class="visual-card-subtitle">Average NIL spend grouped by how far programs advanced</div>
           <div class="chart-wrap" style="height:300px;"><canvas id="vb-postseason"></canvas></div>
-          <div class="visual-insight">The national <strong>champion averaged $850K</strong> vs. $126K for non-postseason programs — a <strong>6.7x gap</strong>. The largest champion-to-no-postseason gap of any tracked sport in this index.</div>
+          <div class="visual-insight">The national <strong>champion averaged $850K</strong> vs. $124K for non-postseason programs — a <strong>6.9x gap</strong>. The largest champion-to-no-postseason gap of any tracked sport in this index.</div>
         </div>
       </div>
 
       <div class="findings-strip">
         <div class="finding-item">
-          <div class="finding-num">6.7x</div>
+          <div class="finding-num">6.9x</div>
           <div class="finding-label">Champion vs. No Postseason NIL Gap</div>
-          <div class="finding-desc">The national champion spent 6.7x more than the average non-postseason program — the largest such gap in any tracked sport.</div>
+          <div class="finding-desc">The national champion spent 6.9x more than the average non-postseason program — the largest such gap in any tracked sport.</div>
         </div>
         <div class="finding-item">
           <div class="finding-num">97.1%</div>
